@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contato{% endblock %}
+{% block descricao %}Fale com a Seculus Desenvolvimento e Consultoria. Envie sua mensagem ou chame no WhatsApp.{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Contato</span>
+<h1>Fale conosco</h1>
+<p>Conte o seu desafio. Retornamos o mais rápido possível.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <span class="eyebrow">Atendimento</span>
+                <h2 class="titulo-secao">Como podemos <em>ajudar?</em></h2>
+                <p class="lead-secao mb-4">Projetos de sistemas, consultoria, parcerias ou oportunidades de trabalho: escreva para nós pelo formulário ou chame no WhatsApp.</p>
+
+                <div class="d-flex flex-column gap-3">
+                    <a class="cartao d-flex gap-3 align-items-center text-decoration-none py-3" href="https://wa.me/5565981132995" target="_blank" rel="noopener">
+                        <span class="cartao-icone mb-0"><i class="fab fa-whatsapp"></i></span>
+                        <span>
+                            <strong class="d-block text-dark">WhatsApp</strong>
+                            <span class="text-secondary">(65) 98113-2995</span>
+                        </span>
+                    </a>
+                    <div class="cartao d-flex gap-3 align-items-center py-3">
+                        <span class="cartao-icone mb-0"><i class="fas fa-location-dot"></i></span>
+                        <span>
+                            <strong class="d-block">Localização</strong>
+                            <span class="text-secondary">Cuiabá - MT · atendimento em todo o Brasil</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="cartao p-4 p-md-5">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nome" class="form-label">Nome *</label>
+                                <input type="text" class="form-control" id="nome" name="nome" autocomplete="name" required maxlength="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="telefone" class="form-label">Telefone / WhatsApp</label>
+                                <input type="tel" class="form-control" id="telefone" name="telefone" autocomplete="tel" maxlength="20" placeholder="(65) 90000-0000">
+                            </div>
+                            <div class="col-12">
+                                <label for="email" class="form-label">E-mail *</label>
+                                <input type="email" class="form-control" id="email" name="email" autocomplete="email" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="mensagem" class="form-label">Mensagem *</label>
+                                <textarea class="form-control" id="mensagem" name="mensagem" rows="5" required placeholder="Conte um pouco sobre o seu projeto ou necessidade"></textarea>
+                            </div>
+                            <div class="col-12 d-flex flex-wrap align-items-center justify-content-between gap-3 mt-4">
+                                <small class="text-secondary">* Campos obrigatórios</small>
+                                <button type="submit" class="btn-sec btn-escuro">Enviar mensagem <i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

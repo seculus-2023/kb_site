@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Alvará Autodeclaratório{% endblock %}
+{% block descricao %}Sistema de Alvará Autodeclaratório para prefeituras: requerimento online pelo profissional, análise documental, taxas, emissão do alvará com QR Code e vistorias de fiscalização.{% endblock %}
+{% block og_titulo %}Alvará Autodeclaratório | Seculus{% endblock %}
+
+{% block head %}
+<style>
+    .alv {
+        --alv-verde-escuro: #1a4d3e;
+        --alv-verde: #28a745;
+        --alv-verde-claro: #6fd08c;
+        --alv-fundo: #f4f6f5;
+    }
+    .alv-destaque {
+        background: linear-gradient(160deg, #215a3e, var(--alv-verde-escuro));
+        border-radius: 20px; padding: clamp(28px, 5vw, 56px); color: #e3efe8;
+        position: relative; overflow: hidden;
+    }
+    .alv-destaque::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(circle at 90% 0%, rgba(111,208,140,.25), transparent 50%);
+    }
+    .alv-destaque > * { position: relative; }
+    .alv-destaque h2 { color: #fff; }
+    .alv-destaque .titulo-secao em { color: var(--alv-verde-claro); }
+    .alv-destaque .lead-secao { color: #c6dccf; }
+    .alv-marca { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+    .alv-marca .alv-icone {
+        width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; flex-shrink: 0;
+        background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); font-size: 28px; color: #ffc107;
+    }
+    .alv-marca strong { font-family: var(--font-tech); font-size: 15px; letter-spacing: .18em; color: #fff; }
+    .alv-marca span { display: block; font-size: 13px; color: var(--alv-verde-claro); }
+    .alv-pontos { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; padding: 0; list-style: none; font-size: 14px; }
+    .alv-pontos li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--alv-verde-claro); margin-right: 8px; }
+    .btn-verde-alv { background: var(--alv-verde-claro); color: var(--alv-verde-escuro); }
+    .btn-verde-alv:hover { background: #fff; color: var(--alv-verde-escuro); box-shadow: 0 8px 24px rgba(111,208,140,.35); }
+    .alv-destaque .btn-contorno { color: #fff; border-color: rgba(255,255,255,.45); }
+
+    /* Linha do tempo do processo */
+    .alv-fluxo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 16px; counter-reset: passo; margin: 0; padding: 0; list-style: none; }
+    .alv-fluxo li {
+        counter-increment: passo; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 20px 16px; text-align: center; position: relative; box-shadow: var(--shadow-sm);
+    }
+    .alv-fluxo li::before {
+        content: counter(passo); display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 12px;
+        border-radius: 50%; background: var(--alv-verde); color: #fff; font-weight: 700;
+    }
+    .alv-fluxo strong { display: block; font-size: 15px; margin-bottom: 4px; color: var(--ink); }
+    .alv-fluxo span { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* Perfis de acesso */
+    .alv-perfil { text-align: center; }
+    .alv-perfil .cartao-icone { margin-left: auto; margin-right: auto; }
+
+    /* Prévias */
+    .alv-janela { background: var(--alv-fundo); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; height: 100%; box-shadow: var(--shadow-sm); }
+    .alv-janela-topo { background: var(--alv-verde); color: #fff; padding: 12px 18px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+    .alv-janela-topo .pontinhos { margin-left: auto; display: flex; gap: 5px; }
+    .alv-janela-topo .pontinhos i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.5); display: block; }
+    .alv-janela-corpo { padding: 18px; }
+
+    .alv-tabela { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; }
+    .alv-tabela th { background: var(--alv-verde); color: #fff; text-transform: uppercase; font-size: 10.5px; letter-spacing: .3px; }
+    .alv-tabela th, .alv-tabela td { border: 1px solid #d1d5db; padding: 8px 10px; }
+    .alv-tabela .st-amarelo td { background: #fff9c4; }
+    .alv-tabela .st-verde td { background: #c9f0d6; }
+    .alv-tabela .st-status { font-weight: 800; font-size: 10.5px; text-transform: uppercase; }
+    .alv-tabela-rolagem { overflow-x: auto; border-radius: 8px; }
+
+    .alv-etapas { display: flex; justify-content: space-between; position: relative; margin: 8px 0 22px; }
+    .alv-etapas::before { content: ""; position: absolute; top: 15px; left: 8%; right: 8%; height: 2px; background: #ced4da; }
+    .alv-etapa { position: relative; text-align: center; flex: 1; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+    .alv-etapa b { display: grid; place-items: center; width: 32px; height: 32px; margin: 0 auto 6px; border-radius: 50%; background: #e9ecef; border: 2px solid #ced4da; color: #6c757d; font-size: 13px; }
+    .alv-etapa.feito b { background: #1e7e34; border-color: #155d27; color: #fff; }
+    .alv-etapa.atual b { background: var(--alv-verde); border-color: #1e7e34; color: #fff; }
+    .alv-doc { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; font-size: 12px; font-weight: 600; }
+    .alv-doc.ok { background: #e8f5e9; border-left: 5px solid var(--alv-verde); }
+    .alv-doc.pendente { border-left: 5px solid #ffc107; }
+    .alv-doc .tag { font-size: 11px; white-space: nowrap; }
+    .alv-doc.ok .tag { color: #1e7e34; }
+    .alv-doc.pendente .tag { color: #a07800; }
+
+    /* Folha do alvará */
+    .alv-folha { background: #fff; border-top: 6px solid #00a651; box-shadow: var(--shadow-md); padding: clamp(16px, 3vw, 28px); max-width: 640px; margin: 0 auto; font-size: 12px; position: relative; overflow: hidden; }
+    .alv-folha::after {
+        content: "EXEMPLO"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: clamp(48px, 10vw, 90px); font-weight: 900; color: rgba(0,0,0,.04); letter-spacing: .3em; pointer-events: none;
+    }
+    .alv-folha-cab { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; gap: 10px; }
+    .alv-qr { width: 70px; height: 70px; border: 2px solid #ccc; border-radius: 4px; display: grid; place-items: center; font-size: 34px; color: #333; }
+    .alv-folha-titulo { text-align: center; }
+    .alv-folha-titulo small { display: block; font-size: 11px; color: #555; font-weight: 700; letter-spacing: .1em; }
+    .alv-folha-titulo strong { display: block; font-size: clamp(34px, 7vw, 54px); font-weight: 900; line-height: 1; letter-spacing: -1px; color: #111; }
+    .alv-nro { border: 2px solid #333; border-radius: 4px; padding: 6px; text-align: center; font-weight: 700; font-size: 11px; line-height: 1.3; }
+    .alv-faixa-preta { background: #111; color: #fff; text-align: center; font-weight: 900; letter-spacing: 3px; padding: 8px; margin: 10px 0 14px; font-size: clamp(14px, 3vw, 20px); }
+    .alv-faixa-verde { background: #00a651; color: #fff; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 10px; margin-top: 12px; font-size: 13px; }
+    .alv-folha table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    .alv-folha td { border: 1px solid #333; padding: 6px 8px; text-align: center; vertical-align: top; }
+    .alv-folha td span { display: block; font-size: 9.5px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; background: #f5f5f5; margin: -6px -8px 4px; padding: 3px; }
+    .alv-folha td b { font-size: 12px; }
+    .alv-validade { display: inline-flex; flex-wrap: wrap; gap: 14px; background: #f5f5f5; border: 1px solid #ccc; border-left: 4px solid #00a651; padding: 6px 12px; margin-top: 10px; font-size: 12px; }
+    .alv-nota { font-size: 13px; color: var(--muted); font-style: italic; text-align: center; margin: 20px 0 0; }
+
+    @media (max-width: 575px) {
+        .alv-etapa { font-size: 0; }
+        .alv-folha td { display: block; width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Setor público</span>
+<h1>Alvará Autodeclaratório</h1>
+<p>Do requerimento ao alvará com QR Code, com análise, taxas e fiscalização em um só sistema.</p>
+{% endblock %}
+
+{% block content %}
+<div class="alv">
+
+<section class="secao">
+    <div class="wrap">
+        <div class="alv-destaque revelar">
+            <div class="alv-marca">
+                <span class="alv-icone"><i class="fas fa-building-circle-check"></i></span>
+                <div><strong>ALVARÁ AUTODECLARATÓRIO</strong><span>Licenciamento de obras online</span></div>
+            </div>
+            <h2 class="titulo-secao">Licenciamento de obras <em>sem papel e sem fila.</em></h2>
+            <p class="lead-secao mb-4">O profissional responsável declara os dados da obra e anexa os documentos pela internet. A prefeitura analisa, emite as taxas, libera o alvará e acompanha a obra com vistorias, tudo no mesmo sistema.</p>
+            <ul class="alv-pontos">
+                <li>Requerimento online</li>
+                <li>Checklist de documentos</li>
+                <li>Taxas de expedição e aprovação</li>
+                <li>Alvará com QR Code</li>
+                <li>Vistorias de fiscalização</li>
+            </ul>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20sistema%20de%20Alvar%C3%A1%20Autodeclarat%C3%B3rio." target="_blank" rel="noopener" class="btn-sec btn-verde-alv"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno"><i class="fas fa-envelope"></i> Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Como funciona</span>
+            <h2 class="titulo-secao">Cada etapa do processo <em>registrada no sistema</em></h2>
+        </div>
+        <ol class="alv-fluxo mt-4 revelar">
+            <li><strong>Requerimento</strong><span>O profissional preenche o DRP e anexa os documentos obrigatórios.</span></li>
+            <li><strong>Taxa de expedição</strong><span>A guia é emitida e o comprovante é enviado pelo sistema.</span></li>
+            <li><strong>Análise documental</strong><span>O analista confere os documentos ou devolve com pendências.</span></li>
+            <li><strong>Taxa de aprovação</strong><span>Após aprovado, o contribuinte paga a segunda taxa.</span></li>
+            <li><strong>Alvará liberado</strong><span>O alvará é emitido com QR Code para validação.</span></li>
+            <li><strong>Vistorias</strong><span>O fiscal registra as vistorias, fotos e o parecer da obra.</span></li>
+        </ol>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Quem usa</span>
+            <h2 class="titulo-secao">Uma área para cada <em>perfil de acesso</em></h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao alv-perfil revelar"><span class="cartao-icone"><i class="fas fa-house"></i></span><h3>Proprietário</h3><p>Acompanha o andamento do processo, baixa as guias e envia os comprovantes de pagamento.</p></article>
+            <article class="cartao alv-perfil revelar"><span class="cartao-icone"><i class="fas fa-helmet-safety"></i></span><h3>Profissional</h3><p>Arquiteto, engenheiro ou responsável técnico: faz o requerimento, anexa ART/RRT e corrige pendências.</p></article>
+            <article class="cartao alv-perfil revelar"><span class="cartao-icone"><i class="fas fa-landmark"></i></span><h3>Prefeitura</h3><p>Analistas e fiscais tramitam processos, conferem documentos, liberam o alvará e fazem as vistorias.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Recursos</span>
+            <h2 class="titulo-secao">Tudo o que o licenciamento <em>precisa</em></h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-list-ol"></i></span><h3>Requerimento em etapas</h3><p>Solicitação, proprietário, profissionais, empreendimento, documentos e revisão, passo a passo.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-file-circle-check"></i></span><h3>Checklist de documentos</h3><p>O envio só avança quando todos os documentos obrigatórios forem anexados.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-triangle-exclamation"></i></span><h3>Pendências e revisão</h3><p>O analista aponta as divergências e o profissional reenvia só o que precisa ser corrigido.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-money-bill-wave"></i></span><h3>Taxas e recibos</h3><p>Guias de expedição e aprovação, envio de comprovantes e confirmação do pagamento.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-qrcode"></i></span><h3>Alvará com QR Code</h3><p>Documento pronto para imprimir, com QR Code para conferir a autenticidade.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-camera"></i></span><h3>Vistoria e fiscalização</h3><p>Parâmetros verificados, constatações, providências, fotos e relatório de vistoria para imprimir.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-route"></i></span><h3>Trâmite e histórico</h3><p>Cada mudança de status fica registrada com data, hora e usuário.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-user-shield"></i></span><h3>Perfis e auditoria</h3><p>Permissões por perfil de acesso e registro das ações feitas no sistema.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-chart-column"></i></span><h3>Painel e relatórios</h3><p>Lista de processos por status, filtros de busca e relatórios para a gestão.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Prévia</span>
+            <h2 class="titulo-secao">Veja algumas telas <em>do sistema</em></h2>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-6 revelar">
+                <div class="alv-janela">
+                    <div class="alv-janela-topo"><i class="fas fa-helmet-safety"></i> Painel do Profissional <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="alv-janela-corpo">
+                        <p class="fw-bold mb-2" style="font-size:14px;">Nova solicitação de alvará</p>
+                        <div class="alv-etapas">
+                            <div class="alv-etapa feito"><b>1</b>Solicitação</div>
+                            <div class="alv-etapa feito"><b>2</b>Proprietário</div>
+                            <div class="alv-etapa feito"><b>3</b>Profissionais</div>
+                            <div class="alv-etapa feito"><b>4</b>Empreend.</div>
+                            <div class="alv-etapa atual"><b>5</b>Documentos</div>
+                            <div class="alv-etapa"><b>6</b>Revisão</div>
+                        </div>
+                        <div class="alv-doc ok"><span><i class="fas fa-square-check me-2"></i>Matrícula do imóvel</span><span class="tag">Anexado</span></div>
+                        <div class="alv-doc ok"><span><i class="fas fa-square-check me-2"></i>ART / RRT – Projeto</span><span class="tag">Anexado</span></div>
+                        <div class="alv-doc ok"><span><i class="fas fa-square-check me-2"></i>ART / RRT – Execução</span><span class="tag">Anexado</span></div>
+                        <div class="alv-doc pendente"><span><i class="fas fa-square-xmark me-2"></i>Projeto arquitetônico (DWG)</span><span class="tag"><i class="fas fa-upload"></i> Anexar</span></div>
+                        <div class="alv-doc pendente mb-0"><span><i class="fas fa-square-xmark me-2"></i>Termo de responsabilidade</span><span class="tag"><i class="fas fa-upload"></i> Anexar</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 revelar">
+                <div class="alv-janela">
+                    <div class="alv-janela-topo"><i class="fas fa-landmark"></i> Painel Administrativo <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="alv-janela-corpo">
+                        <p class="fw-bold mb-2" style="font-size:14px;">Análise de processos</p>
+                        <div class="alv-tabela-rolagem">
+                            <table class="alv-tabela">
+                                <thead><tr><th>Processo</th><th>Proprietário</th><th>Tipo</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr><td>DRP000951/2026</td><td>Solicitante Exemplo Ltda</td><td>Residencial</td><td class="st-status">Alvará liberado</td></tr>
+                                    <tr class="st-amarelo"><td>DRP000950/2026</td><td>Construtora Modelo S.A.</td><td>Comercial</td><td class="st-status">Análise documental</td></tr>
+                                    <tr class="st-amarelo"><td>DRP000949/2026</td><td>Empreendimentos Beta</td><td>Multifamiliar</td><td class="st-status">Aguardando pagamento</td></tr>
+                                    <tr class="st-verde"><td>DRP000948/2026</td><td>Particular Exemplo</td><td>Residencial</td><td class="st-status">Vistoria 1</td></tr>
+                                    <tr><td>DRP000932/2026</td><td>Proprietário Exemplo</td><td>Residencial</td><td class="st-status">Processo concluído</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 revelar">
+                <div class="alv-janela">
+                    <div class="alv-janela-topo"><i class="fas fa-file-shield"></i> Alvará emitido <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="alv-janela-corpo">
+                        <div class="alv-folha">
+                            <div class="alv-folha-cab">
+                                <div class="alv-qr"><i class="fas fa-qrcode"></i></div>
+                                <div class="alv-folha-titulo"><small>PREFEITURA MUNICIPAL</small><strong>ALVARÁ</strong></div>
+                                <div class="alv-nro">DRP000152<br>/2026</div>
+                            </div>
+                            <div class="alv-faixa-preta">AUTODECLARATÓRIO</div>
+                            <table><tr>
+                                <td><span>Processo nº</span><b>DRP000152/2026</b></td>
+                                <td><span>Tipo de obra</span><b>Construção</b></td>
+                                <td><span>Uso da edificação</span><b>Residência unifamiliar</b></td>
+                            </tr></table>
+                            <table><tr>
+                                <td style="width:70%"><span>Proprietário</span><b>PROPRIETÁRIO EXEMPLO</b></td>
+                                <td><span>CPF / CNPJ</span><b>000.000.000-00</b></td>
+                            </tr></table>
+                            <div class="alv-faixa-verde">Informações do empreendimento</div>
+                            <table><tr>
+                                <td><span>Inscrição cadastral</span><b>00.0.00.000.0000.000</b></td>
+                                <td><span>Área a construir</span><b>148,50 m²</b></td>
+                                <td><span>Área do lote</span><b>300,00 m²</b></td>
+                            </tr><tr>
+                                <td><span>Responsável técnico</span><b>RESPONSÁVEL EXEMPLO</b></td>
+                                <td><span>CREA/CAU</span><b>00000</b></td>
+                                <td><span>ART/RRT</span><b>0000000000</b></td>
+                            </tr></table>
+                            <div class="alv-validade"><span><strong>Início:</strong> 24 meses</span><span><strong>Término:</strong> 60 meses</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="alv-nota">Telas ilustrativas com dados de exemplo.</p>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cta-faixa revelar">
+            <div>
+                <h2>Leve o Alvará Autodeclaratório para o seu município</h2>
+                <p>Fale com a nossa equipe e agende uma demonstração.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20sistema%20de%20Alvar%C3%A1%20Autodeclarat%C3%B3rio." target="_blank" rel="noopener" class="btn-sec btn-ouro"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno">Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+{% endblock %}

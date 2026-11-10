@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{% endblock %} | Seculus Desenvolvimento e Consultoria</title>
+	<meta name="description" content="{% block descricao %}Seculus Desenvolvimento e Consultoria: consultoria empresarial e hospitalar para empresas, hospitais e clínicas, com sistemas sob medida em GeneXus e soluções para gestão pública. Cuiabá - MT.{% endblock %}">
+	<meta name="author" content="Seculus Desenvolvimento e Consultoria Ltda">
+	<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+	<!-- Compartilhamento (WhatsApp, LinkedIn, Facebook) -->
+	<meta property="og:type" content="website">
+	<meta property="og:locale" content="pt_BR">
+	<meta property="og:site_name" content="Seculus Desenvolvimento e Consultoria">
+	<meta property="og:title" content="{% block og_titulo %}Seculus Desenvolvimento e Consultoria{% endblock %}">
+	<meta property="og:description" content="Sistemas sob medida, consultoria em gestão e tecnologia para o setor público e privado.">
+	<meta property="og:url" content="{{ request.build_absolute_uri }}">
+	<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'icons/icon-512.png' %}">
+
+	<!-- PWA: manifesto, cor do tema e ícones -->
+	<link rel="manifest" href="{% static 'manifest.webmanifest' %}">
+	<meta name="theme-color" content="#0B1726">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Seculus">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon-32.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon-16.png' %}">
+	<link rel="apple-touch-icon" href="{% static 'icons/apple-touch-icon.png' %}">
+	<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+
+	<!-- Fontes e ícones -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+	<!-- Bootstrap + tema do site
+	     Ao alterar style.css ou script.js, troque o número do ?v= para a Cloudflare
+	     e os navegadores buscarem a versão nova. -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261103c">
+	{% block head %}{% endblock %}
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+	<!-- Botão do WhatsApp -->
+    <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es."
+       class="whatsapp-button" target="_blank" rel="noopener" title="Fale conosco pelo WhatsApp" aria-label="Fale conosco pelo WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    <!-- Botão "Instalar app" (PWA): só aparece quando o navegador permite instalar -->
+    <button type="button" id="btn-instalar-pwa-flutuante" class="btn-instalar-flutuante" style="display:none;">
+        <i class="fas fa-download me-1" aria-hidden="true"></i> Instalar app
+    </button>
+
+    {% block hero %}
+    {% if request.resolver_match.url_name == 'home' %}
+    <section id="inicio" class="hero">
+        <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="{% static 'img/videohero.mp4' %}" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-inner">
+            <div class="hero-topo">
+                <div class="hero-texto">
+                    <p class="hero-selo">
+                        <img src="{% static 'img/icone.png' %}" alt="">
+                        SECULUS DESENVOLVIMENTO &amp; CONSULTORIA
+                    </p>
+                    <h1>Consultoria empresarial e hospitalar para gerir com mais controle e <em>crescer.</em></h1>
+                </div>
+                <div class="hero-lateral">
+                    <p class="hero-descricao">Mais de 30 anos ajudando empresas, hospitais e clínicas a organizar finanças, custos e processos — e transformando essa gestão em sistemas confiáveis e simples de usar.</p>
+                    <div class="hero-botoes">
+                        <a href="{% url 'contato' %}" class="btn-sec btn-ouro">Fale com um especialista <i class="fas fa-arrow-right"></i></a>
+                        <a href="#consultoria" class="btn-sec btn-contorno">Conheça a consultoria</a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-areas">
+                <span>CONSULTORIA EMPRESARIAL</span><span>GESTÃO HOSPITALAR</span><span>CLÍNICAS</span><span>SISTEMAS SOB MEDIDA</span><span>GESTÃO PÚBLICA</span>
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <section class="banner">
+        <video class="banner-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="{% static 'img/videohero.mp4' %}" type="video/mp4">
+        </video>
+        <div class="banner-overlay"></div>
+        <div class="banner-inner">
+            {% block banner_titulo %}{% endblock %}
+        </div>
+    </section>
+    {% endif %}
+    {% endblock %}
+
+    <main id="conteudo">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="rodape">
+        <div class="wrap">
+            <div class="rodape-grade">
+                <div class="rodape-marca">
+                    <img src="{% static 'img/favicon.ico' %}" alt="Seculus">
+                    <p>Seculus Desenvolvimento e Consultoria Ltda. Sistemas sob medida, consultoria e tecnologia para o setor público e privado.</p>
+                </div>
+                <div>
+                    <h4>Institucional</h4>
+                    <ul>
+                        <li><a href="{% url 'historia' %}">Nossa história</a></li>
+                        <li><a href="{% url 'valores' %}">Missão e valores</a></li>
+                        <li><a href="{% url 'membros' %}">Equipe</a></li>
+                        <li><a href="{% url 'contato' %}">Trabalhe conosco</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Soluções</h4>
+                    <ul>
+                        <li><a href="{% url 'projetos' %}">Produtos e soluções</a></li>
+                        <li><a href="{% url 'politica' %}">Política</a></li>
+                        <li><a href="{% url 'agro' %}">Agronegócio</a></li>
+                        <li><a href="{% url 'bolsatrader' %}">BolsaTrader</a></li>
+                        <li><a href="{% url 'seletivo' %}">Seletivo</a></li>
+                        <li><a href="{% url 'alvara' %}">Alvará Autodeclaratório</a></li>
+                        <li><a href="{% url 'instalar_app' %}">Instalar aplicativo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contato</h4>
+                    <ul class="rodape-contato">
+                        <li><i class="fab fa-whatsapp"></i><a href="https://wa.me/5565981132995" target="_blank" rel="noopener">(65) 98113-2995</a></li>
+                        <li><i class="fas fa-envelope"></i><a href="{% url 'contato' %}">Envie uma mensagem</a></li>
+                        <li><i class="fas fa-location-dot"></i><span>Cuiabá - MT</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rodape-base">
+                <span>&copy; {% now "Y" %} Seculus Desenvolvimento e Consultoria Ltda. Todos os direitos reservados.</span>
+                <span>Cuiabá - Mato Grosso</span>
+            </div>
+        </div>
+    </footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<script src="{% static 'js/script.js' %}?v=20261103c"></script>
+	<script src="{% static 'js/pwa.js' %}"></script>
+	{% block scripts %}{% endblock scripts %}
+</body>
+</html>

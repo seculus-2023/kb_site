@@ -1,0 +1,73 @@
+{% load static %}
+{% with pagina=request.resolver_match.url_name %}
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-futurista">
+      <div class="container-fluid">
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center gap-2 nf-brand" href="{% url 'home' %}">
+          <span class="nf-logo-ring">
+            <img src="{% static 'img/favicon.ico' %}" alt="Seculus">
+          </span>
+          <img src="{% static 'img/estrelas.png' %}" class="nf-logo-secundario" alt="">
+        </a>
+
+        <!-- BOTÃO TOGGLER PARA MOBILE -->
+        <button class="navbar-toggler nf-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+
+        <!-- MENU PRINCIPAL -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+            <li class="nav-item">
+              <a class="nav-link{% if pagina == 'home' %} active{% endif %}" href="{% url 'home' %}">HOME</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle{% if pagina == 'historia' or pagina == 'valores' or pagina == 'membros' %} active{% endif %}" href="#" id="navbarDropdownSeculus" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                A SECULUS
+              </a>
+              <ul class="dropdown-menu text-center text-lg-start" aria-labelledby="navbarDropdownSeculus">
+                <li><a class="dropdown-item" href="{% url 'historia' %}">Nossa História</a></li>
+                <li><a class="dropdown-item" href="{% url 'valores' %}">Missão e Valores</a></li>
+                <li><a class="dropdown-item" href="{% url 'contato' %}">Trabalhe conosco</a></li>
+                <li><a class="dropdown-item" href="{% url 'membros' %}">Equipe</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link{% if pagina == 'projetos' %} active{% endif %}" href="{% url 'projetos' %}">PRODUTOS E SOLUÇÕES</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle{% if pagina == 'politica' or pagina == 'agro' or pagina == 'bolsatrader' or pagina == 'seletivo' or pagina == 'alvara' %} active{% endif %}" href="#" id="navbarDropdownSegmentos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                SEGMENTOS
+              </a>
+              <ul class="dropdown-menu text-center text-lg-start" aria-labelledby="navbarDropdownSegmentos">
+                <li><a class="dropdown-item" href="{% url 'politica' %}">Política</a></li>
+                <li><a class="dropdown-item" href="{% url 'agro' %}">Agronegócio</a></li>
+                <li><a class="dropdown-item" href="{% url 'bolsatrader' %}">BolsaTrader</a></li>
+                <li><a class="dropdown-item" href="{% url 'seletivo' %}">Seletivo</a></li>
+                <li><a class="dropdown-item" href="{% url 'alvara' %}">Alvará Autodeclaratório</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle{% if pagina == 'contato' or pagina == 'instalar_app' %} active{% endif %}" href="#" id="navbarDropdownServicos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                SERVIÇOS
+              </a>
+              <ul class="dropdown-menu text-center text-lg-start" aria-labelledby="navbarDropdownServicos">
+                <li><a class="dropdown-item" href="{% url 'contato' %}">Fale Conosco</a></li>
+                <li><a class="dropdown-item" href="{% url 'instalar_app' %}">Aplicativo Seculus</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- REDES SOCIAIS -->
+          <div class="nf-social d-flex align-items-center justify-content-center gap-2">
+            <a href="https://wa.me/5565981132995" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="{% url 'contato' %}" title="Fale conosco" aria-label="Fale conosco"><i class="fas fa-envelope"></i></a>
+            <a href="{% url 'instalar_app' %}" class="nf-install" title="Instalar app" aria-label="Instalar app"><i class="fas fa-download"></i><span>APP</span></a>
+          </div>
+        </div>
+      </div>
+      <span class="nf-scanline" aria-hidden="true"></span>
+    </nav>
+{% endwith %}

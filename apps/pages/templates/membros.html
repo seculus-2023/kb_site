@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Equipe{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">A Seculus</span>
+<h1>Nossa equipe</h1>
+<p>As pessoas por trás de cada projeto.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        {% if equipe %}
+        <div class="grade grade-4">
+            {% for membro in equipe %}
+            <article class="cartao text-center p-4 revelar">
+                {% if membro.foto %}
+                <img src="{{ membro.foto.url }}" alt="Foto de {{ membro.nome }}" loading="lazy"
+                     class="rounded-circle mb-3" style="width: 132px; height: 132px; object-fit: cover; border: 3px solid var(--sand);">
+                {% else %}
+                <span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                      style="width: 132px; height: 132px; background: var(--navy-900); color: var(--gold); font-size: 44px; font-weight: 600;">{{ membro.nome|slice:":1"|upper }}</span>
+                {% endif %}
+                <h3 class="mb-1">{{ membro.nome }}</h3>
+                {% if membro.cargo %}<p class="eyebrow mb-3" style="font-size: 11px;">{{ membro.cargo }}</p>{% endif %}
+                <div class="d-flex justify-content-center gap-2">
+                    {% if membro.email %}<a href="mailto:{{ membro.email }}" class="btn-sec btn-contorno-escuro py-2 px-3" title="{{ membro.email }}" aria-label="E-mail de {{ membro.nome }}"><i class="fas fa-envelope"></i></a>{% endif %}
+                    {% if membro.telefone %}<a href="tel:{{ membro.telefone }}" class="btn-sec btn-contorno-escuro py-2 px-3" title="{{ membro.telefone }}" aria-label="Telefone de {{ membro.nome }}"><i class="fas fa-phone"></i></a>{% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="cartao text-center"><p class="mb-0">Equipe em atualização.</p></div>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}

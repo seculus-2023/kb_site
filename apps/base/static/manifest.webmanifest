@@ -1,0 +1,38 @@
+{
+  "name": "Seculus Desenvolvimento & Consultoria",
+  "short_name": "Seculus",
+  "description": "Consultoria empresarial, soluções tributárias, assessoria ambiental, acesso ao crédito e tecnologia.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0B1726",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["business"],
+  "icons": [
+    { "src": "/static/icons/favicon-16.png", "sizes": "16x16", "type": "image/png", "purpose": "any" },
+    { "src": "/static/icons/favicon-32.png", "sizes": "32x32", "type": "image/png", "purpose": "any" },
+    { "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/static/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Fale conosco",
+      "short_name": "Contato",
+      "description": "Enviar uma mensagem para a Seculus",
+      "url": "/contato",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Produtos e soluções",
+      "short_name": "Produtos",
+      "description": "Ver os projetos e soluções da Seculus",
+      "url": "/projetos",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

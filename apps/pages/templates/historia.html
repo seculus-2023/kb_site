@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nossa história{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">A Seculus</span>
+<h1>Nossa história</h1>
+<p>Mais de 30 anos unindo gestão de negócios e tecnologia da informação.</p>
+{% endblock %}
+
+{% block content %}
+<style>
+  /* ---- Abertura ---- */
+  .hist-numeros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .hist-numero { background: var(--surface); padding: 24px 20px; }
+  .hist-numero strong {
+    display: block;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--navy-800);
+    margin-bottom: 8px;
+  }
+  .hist-numero span { font-size: 14px; color: var(--muted); line-height: 1.4; display: block; }
+
+  .hist-fundador {
+    display: flex; gap: 20px; align-items: flex-start;
+    margin-top: 40px; padding: 24px 28px;
+    border-left: 3px solid var(--gold);
+    background: var(--surface-alt);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .hist-fundador-sigla {
+    flex: 0 0 52px; height: 52px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+    color: var(--gold); font-weight: 600; font-size: 16px; letter-spacing: .04em;
+  }
+  .hist-fundador p { margin: 0; color: var(--muted); line-height: 1.65; }
+  .hist-fundador strong { color: var(--ink); }
+
+  /* ---- Linha do tempo ---- */
+  .hist-linha { position: relative; margin: 0; padding: 0; list-style: none; }
+  .hist-linha::before {
+    content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--line);
+  }
+  .hist-capitulo { position: relative; padding: 0 0 44px 44px; }
+  .hist-capitulo:last-child { padding-bottom: 0; }
+  .hist-capitulo::before {
+    content: ""; position: absolute; left: 0; top: 4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--surface); border: 3px solid var(--navy-700);
+  }
+  .hist-capitulo.atual::before { border-color: var(--gold); background: var(--gold); }
+  .hist-periodo {
+    font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--gold-dark); margin-bottom: 6px;
+  }
+  .hist-capitulo h3 { font-size: 22px; font-weight: 650; margin: 0 0 4px; }
+  .hist-local { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
+  .hist-capitulo > p { color: var(--muted); line-height: 1.7; margin: 0 0 16px; max-width: 62ch; }
+  .hist-marcos { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .hist-marcos li {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; font-size: 15px; line-height: 1.55; color: var(--ink);
+  }
+  .hist-marcos li b { font-weight: 600; }
+  .hist-marcos li span { color: var(--muted); }
+  .hist-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .hist-tags span {
+    font-size: 12.5px; padding: 4px 12px; border-radius: 999px;
+    border: 1px solid rgba(184,154,101,.5); color: var(--gold-dark); background: #fff;
+  }
+
+  @media (max-width: 576px) {
+    .hist-fundador { flex-direction: column; padding: 20px; }
+    .hist-capitulo { padding-left: 32px; }
+  }
+</style>
+
+{# ---------- Abertura ---------- #}
+<section class="secao">
+  <div class="wrap-estreito">
+    <div class="cabecalho-secao revelar">
+      <span class="eyebrow">Quem somos</span>
+      <h2 class="titulo-secao">Tecnologia feita por quem <em>já esteve do lado do negócio</em></h2>
+      <p class="lead-secao">A Seculus nasceu de uma trajetória que começou dentro de hospitais e empresas, passou pela direção financeira de uma indústria e chegou à gestão pública. Por isso entendemos o problema antes de escrever a primeira linha de código — e entregamos sistemas que continuam funcionando muito depois da entrega.</p>
+    </div>
+
+    <div class="hist-numeros revelar">
+      <div class="hist-numero"><strong>30+</strong><span>anos em gestão e tecnologia</span></div>
+      <div class="hist-numero"><strong>4</strong><span>estados atendidos: SP, MT, RS e PA</span></div>
+      <div class="hist-numero"><strong>7.5→18</strong><span>todas as gerações do GeneXus</span></div>
+      <div class="hist-numero"><strong>6</strong><span>setores: saúde, público, educação, indústria, agro e hotelaria</span></div>
+    </div>
+
+    <div class="hist-fundador revelar">
+      <div class="hist-fundador-sigla" aria-hidden="true">AR</div>
+      <p><strong>Antonio Roberto Pereira Junior</strong>, fundador da Seculus, é consultor empresarial e hospitalar e gerente de projetos de TI. Tecnólogo em Sistemas de Informação, foi diretor financeiro e gestor operacional antes de liderar projetos de software — experiência que hoje orienta cada entrega da empresa.</p>
+    </div>
+  </div>
+</section>
+
+{# ---------- Linha do tempo ---------- #}
+<section class="secao secao-alt">
+  <div class="wrap-estreito">
+    <div class="cabecalho-secao revelar">
+      <span class="eyebrow">Linha do tempo</span>
+      <h2 class="titulo-secao">Os capítulos que <em>formaram a Seculus</em></h2>
+      <p class="lead-secao">Cada fase acrescentou um tipo de conhecimento: saúde, hotelaria, agronegócio, previdência, educação, indústria e gestão municipal.</p>
+    </div>
+
+    <ol class="hist-linha">
+      <li class="hist-capitulo revelar">
+        <div class="hist-periodo">1998 – 2005</div>
+        <h3>Raízes na saúde e na consultoria</h3>
+        <p class="hist-local">São José do Rio Preto e interior de São Paulo</p>
+        <p>O começo foi dentro do hospital: desenvolver o ERP completo de uma instituição de saúde ensinou que sistema bom é o que acompanha a rotina de quem atende, controla o estoque e fecha o caixa.</p>
+        <ul class="hist-marcos">
+          <li><b>Hospital Ielar</b> <span>— desenvolvimento de todo o ERP hospitalar integrado, incluindo o módulo financeiro.</span></li>
+          <li><b>Dual Software</b> <span>— consultoria em gestão hospitalar (atendimento, farmácia, financeiro e laboratório) e o software das farmácias das Unimed regionais.</span></li>
+          <li><b>Oasis Sistemas</b> <span>— implantação de gestão hoteleira e consultoria financeira em hotéis de várias regiões do Brasil.</span></li>
+          <li><b>Consultoria</b> <span>— sistemas nos hospitais de Serra Negra, Cotia e no Hospital de Base de São José do Rio Preto; custos de cana-de-açúcar e estoque na Alcoeste (Grupo Arakaki); evolução do software da Agropecuária CFM.</span></li>
+        </ul>
+      </li>
+
+      <li class="hist-capitulo revelar">
+        <div class="hist-periodo">2006 – 2012</div>
+        <h3>Chegada a Cuiabá e o setor público</h3>
+        <p class="hist-local">Cuiabá (MT) e Belém (PA)</p>
+        <p>A mudança para Mato Grosso trouxe projetos de grande escala para governos: educação, previdência e saúde municipal.</p>
+        <ul class="hist-marcos">
+          <li><b>SEDUC-MT</b> <span>— gerência do projeto web da Secretaria de Educação, com RH, contagem de pontos e atribuição de aulas.</span></li>
+          <li><b>IPAMB — Belém/PA</b> <span>— análise, desenvolvimento e implantação do sistema do instituto de previdência e assistência à saúde do município.</span></li>
+          <li><b>AR Pereira</b> <span>— projetos próprios de gestão hospitalar, saúde municipal, clínica odontológica, gestão escolar, administração pública, concursos e simulados online.</span></li>
+          <li><b>Previdência pública</b> <span>— recadastramento de ativos, inativos e pensionistas, compensação previdenciária (COMPREV) e integração com o SISOBI.</span></li>
+        </ul>
+      </li>
+
+      <li class="hist-capitulo revelar">
+        <div class="hist-periodo">2012 – 2016</div>
+        <h3>Do outro lado da mesa: gestão</h3>
+        <p class="hist-local">Porto Alegre (RS) e Cuiabá (MT)</p>
+        <p>Assumir a direção financeira de uma indústria e a gerência de uma operação de grande porte deu a visão de quem usa o sistema para tomar decisões.</p>
+        <ul class="hist-marcos">
+          <li><b>SEAWAYDIVER</b> <span>— diretor financeiro de uma indústria de câmaras hiperbáricas e responsável pelo ERP de gestão industrial.</span></li>
+          <li><b>Grupo Anaconda</b> <span>— gerente direto do Aterro Sanitário de Cuiabá e desenvolvimento do software de gestão de aterros.</span></li>
+        </ul>
+      </li>
+
+      <li class="hist-capitulo revelar">
+        <div class="hist-periodo">2017 – 2021</div>
+        <h3>Consultoria independente</h3>
+        <p class="hist-local">Cuiabá (MT)</p>
+        <p>Consultoria financeira e hospitalar para empresas e instituições de saúde, somada a novos produtos de software.</p>
+        <ul class="hist-marcos">
+          <li><b>Saúde ocupacional</b> <span>— software de gestão de saúde ocupacional.</span></li>
+          <li><b>Comércio</b> <span>— e-commerce para gestão de consignados e sistema de call center.</span></li>
+          <li><b>Inteligência política</b> <span>— software de apoio à assessoria de candidaturas.</span></li>
+          <li><b>SEDUC-MT</b> <span>— retorno aos projetos de sistemas da Secretaria de Educação do Estado (2021).</span></li>
+        </ul>
+      </li>
+
+      <li class="hist-capitulo atual revelar">
+        <div class="hist-periodo">2022 – hoje</div>
+        <h3>Seculus Desenvolvimento e Consultoria</h3>
+        <p class="hist-local">Sede em Cuiabá (MT)</p>
+        <p>Toda essa bagagem passa a atuar sob a marca Seculus. Em parceria com a Log,Lab Inteligência Digital, desenvolvemos e mantemos sistemas da Prefeitura Municipal de Cuiabá (SMGE).</p>
+        <ul class="hist-marcos">
+          <li><b>SECONCURSO</b> <span>— gestão de concursos públicos.</span></li>
+          <li><b>SEMOB</b> <span>— mobilidade urbana.</span></li>
+          <li><b>Alvará</b> <span>— licenciamento de atividades econômicas.</span></li>
+        </ul>
+        <div class="hist-tags">
+          <span>GeneXus 18</span><span>PostgreSQL</span><span>Java / Tomcat</span><span>Python</span><span>Django</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+{# ---------- O que essa trajetória entrega ---------- #}
+<section class="secao secao-escura">
+  <div class="wrap">
+    <div class="cabecalho-secao revelar">
+      <span class="eyebrow">O que trazemos para o seu projeto</span>
+      <h2 class="titulo-secao">Experiência que vira <em>método</em></h2>
+    </div>
+    <div class="row">
+      <div class="col-md-6 valor revelar">
+        <span class="valor-num">01</span>
+        <h3>Consultoria empresarial</h3>
+        <p>Diagnóstico financeiro, custos operacionais e de produção, controle de estoque, organização e métodos (O&amp;M) e melhoria de processos.</p>
+      </div>
+      <div class="col-md-6 valor revelar">
+        <span class="valor-num">02</span>
+        <h3>Saúde e gestão hospitalar</h3>
+        <p>Implantação de ERP hospitalar em atendimento, farmácia, laboratório e financeiro; saúde pública, ocupacional e operadoras.</p>
+      </div>
+      <div class="col-md-6 valor revelar">
+        <span class="valor-num">03</span>
+        <h3>Setor público</h3>
+        <p>Sistemas para prefeituras e secretarias estaduais: educação, saúde, previdência, mobilidade urbana, concursos e licenciamento.</p>
+      </div>
+      <div class="col-md-6 valor revelar">
+        <span class="valor-num">04</span>
+        <h3>Gestão de projetos de TI</h3>
+        <p>Levantamento de requisitos, arquitetura e desenvolvimento, com governança (ITIL, COBIT) e metodologias ágeis (Scrum).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock scripts %}

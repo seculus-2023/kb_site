@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Instalar o aplicativo{% endblock %}
+
+{% block banner_titulo %}<h1>Instalar o aplicativo</h1>{% endblock %}
+
+{% block content %}
+<style>
+    .instalar-pagina .container {
+        margin-top: 0 !important;
+        height: auto;
+        min-width: 0;
+        max-width: 1100px;
+        padding: 40px 20px;
+        background: transparent;
+        box-shadow: none;
+    }
+    .instalar-pagina .card { height: 100%; }
+    .instalar-grade {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+    }
+    .instalar-pagina .btn-instalar {
+        background: #B89A65; color: #0B1726; border: 0; border-radius: 999px;
+        font-weight: 700; font-size: 1.1rem; padding: .9rem 1.8rem;
+    }
+    .instalar-pagina .btn-instalar:hover { background: #0B1726; color: #F6F2EA; }
+</style>
+
+<div class="instalar-pagina">
+    <div class="container">
+        <p class="text-center text-muted mb-4">
+            O site da Seculus abre como um programa, com ícone próprio na área de trabalho,
+            no menu Iniciar ou na tela do celular.
+        </p>
+
+        <div class="card mb-4 text-center">
+            <div class="card-body">
+                <p id="pwa-ja-instalado" hidden class="fs-5 mb-0">✅ O aplicativo já está aberto como programa neste aparelho.</p>
+                <div id="pwa-instalar-bloco">
+                    <button type="button" id="btn-instalar-pwa-pagina" class="btn-instalar" style="display:none;">
+                        ⬇ Instalar aplicativo
+                    </button>
+                    <p id="pwa-sem-botao" class="text-muted mb-0">
+                        Se o botão de instalar não aparecer, siga o passo a passo do seu aparelho abaixo.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="instalar-grade">
+            <div>
+                <div class="card"><div class="card-body">
+                    <h5>💻 Computador: Chrome ou Edge</h5>
+                    <ol>
+                        <li>Abra o site no <strong>Google Chrome</strong> ou no <strong>Microsoft Edge</strong>.</li>
+                        <li>Clique em <strong>⬇ Instalar aplicativo</strong> acima, ou no ícone de instalar no canto direito da barra de endereço.</li>
+                        <li>Confirme em <strong>Instalar</strong>. O ícone aparece na área de trabalho e no menu Iniciar.</li>
+                    </ol>
+                    <small class="text-muted">No Edge também dá pelo menu ⋯ → Aplicativos → Instalar este site como aplicativo.</small>
+                </div></div>
+            </div>
+            <div>
+                <div class="card"><div class="card-body">
+                    <h5>🤖 Celular Android</h5>
+                    <ol>
+                        <li>Abra no <strong>Chrome</strong>.</li>
+                        <li>Toque no menu <strong>⋮</strong> → <strong>Instalar aplicativo</strong> (ou "Adicionar à tela inicial").</li>
+                        <li>Confirme. O ícone aparece junto com os outros aplicativos.</li>
+                    </ol>
+                </div></div>
+            </div>
+            <div>
+                <div class="card"><div class="card-body">
+                    <h5>🍎 iPhone e iPad</h5>
+                    <ol>
+                        <li>Abra no <strong>Safari</strong>.</li>
+                        <li>Toque em <strong>Compartilhar</strong> (quadrado com seta para cima).</li>
+                        <li>Escolha <strong>Adicionar à Tela de Início</strong> e depois <strong>Adicionar</strong>.</li>
+                    </ol>
+                </div></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        function marcarInstalado() {
+            document.getElementById("pwa-ja-instalado").hidden = false;
+            document.getElementById("pwa-instalar-bloco").hidden = true;
+        }
+        if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+            marcarInstalado();
+        }
+        // quando o navegador oferece a instalação, o pwa.js mostra o botão e o aviso some
+        window.addEventListener("beforeinstallprompt", function () {
+            document.getElementById("pwa-sem-botao").hidden = true;
+        });
+        window.addEventListener("appinstalled", marcarInstalado);
+    })();
+</script>
+{% endblock %}

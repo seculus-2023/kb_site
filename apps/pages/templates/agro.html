@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Agronegócio{% endblock %}
+{% block descricao %}Plataforma integrada para o agronegócio: gestão de talhões, safra, estoque, maquinário, clima e rastreabilidade em um só lugar.{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Agronegócio</span>
+<h1>Plataforma integrada para o agronegócio</h1>
+<p>Gestão de talhões, safra, estoque, maquinário, clima e rastreabilidade em um só lugar.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 revelar">
+                <span class="eyebrow">Visão geral</span>
+                <h2 class="titulo-secao">Toda a operação do campo <em>sob controle.</em></h2>
+                <p class="lead-secao mb-4">Informação organizada para decidir melhor: do planejamento da safra ao controle de custos, com dados reunidos em uma única plataforma.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% static 'pdf/guia_agro.pdf' %}" download class="btn-sec btn-escuro"><i class="fas fa-file-pdf"></i> Baixar apresentação (PDF)</a>
+                    <a href="{% url 'contato' %}" class="btn-sec btn-contorno-escuro">Solicitar demonstração</a>
+                </div>
+            </div>
+            <div class="col-lg-6 revelar">
+                <img src="{% static 'img/LogoAgro.png' %}" alt="Apresentação da plataforma integrada para o agronegócio" class="w-100 rounded-4 shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao revelar">
+            <span class="eyebrow">Módulos</span>
+            <h2 class="titulo-secao">O que a plataforma reúne</h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-map"></i></span><h3>Talhões</h3><p>Cadastro e acompanhamento de cada área produtiva.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-wheat-awn"></i></span><h3>Safra</h3><p>Planejamento, execução e resultado de cada ciclo.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-boxes-stacked"></i></span><h3>Estoque</h3><p>Controle de insumos, entradas e saídas.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-tractor"></i></span><h3>Maquinário</h3><p>Uso, manutenção e custos de operação.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-cloud-sun-rain"></i></span><h3>Clima</h3><p>Informações climáticas para apoiar decisões no campo.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-route"></i></span><h3>Rastreabilidade</h3><p>Histórico da produção, do plantio à entrega.</p></article>
+        </div>
+    </div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}

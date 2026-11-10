@@ -1,0 +1,52 @@
+{% if projetos %}
+<div class="grade grade-3">
+    {% for projeto in projetos %}
+    <button type="button" class="produto revelar" data-bs-toggle="modal" data-bs-target="#modalProduto"
+            data-nome="{{ projeto.nome }}" data-descricao="{{ projeto.descricao }}"
+            data-img="{% if projeto.logo %}{{ projeto.logo.url }}{% endif %}">
+        <div class="produto-img">
+            {% if projeto.logo %}
+            <img src="{{ projeto.logo.url }}" alt="{{ projeto.nome }}" loading="lazy">
+            {% else %}
+            <i class="fas fa-cube fa-3x text-secondary"></i>
+            {% endif %}
+        </div>
+        <div class="produto-corpo">
+            <h3>{{ projeto.nome }}</h3>
+            {% if projeto.descricao %}<p>{{ projeto.descricao|truncatewords:22 }}</p>{% endif %}
+        </div>
+    </button>
+    {% endfor %}
+</div>
+
+<!-- Janela com a imagem ampliada -->
+<div class="modal fade modal-produto" id="modalProduto" tabindex="-1" aria-labelledby="modalProdutoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalProdutoTitulo"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <img id="modalProdutoImg" src="" alt="">
+            <div class="modal-body" id="modalProdutoDescricao"></div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('modalProduto').addEventListener('show.bs.modal', function (e) {
+    var b = e.relatedTarget;
+    var img = document.getElementById('modalProdutoImg');
+    var desc = document.getElementById('modalProdutoDescricao');
+    document.getElementById('modalProdutoTitulo').textContent = b.dataset.nome;
+    img.src = b.dataset.img || '';
+    img.alt = b.dataset.nome;
+    img.hidden = !b.dataset.img;
+    desc.textContent = b.dataset.descricao || '';
+    desc.hidden = !b.dataset.descricao;
+});
+</script>
+{% else %}
+<div class="cartao text-center">
+    <p class="mb-0">Em breve apresentaremos nossas soluções aqui. Enquanto isso, <a href="{% url 'contato' %}">fale conosco</a>.</p>
+</div>
+{% endif %}

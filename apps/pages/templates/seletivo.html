@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seletivo{% endblock %}
+{% block descricao %}Portal de Inscrições: sistema para concursos e processos seletivos de prefeituras e órgãos públicos. Publicação de editais, inscrição online e acompanhamento em um só lugar.{% endblock %}
+{% block og_titulo %}Seletivo | Seculus{% endblock %}
+
+{% block head %}
+<style>
+    /* Cores próprias da vitrine do Portal de Inscrições */
+    .sel {
+        --sel-verde-escuro: #1b4332;
+        --sel-verde: #2d6a4f;
+        --sel-verde-claro: #52b788;
+        --sel-fundo: #f7f9f6;
+    }
+    .sel-destaque {
+        background: linear-gradient(160deg, #22553f, var(--sel-verde-escuro));
+        border-radius: 20px;
+        padding: clamp(28px, 5vw, 56px);
+        color: #e3efe8;
+        position: relative;
+        overflow: hidden;
+    }
+    .sel-destaque::before {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(circle at 90% 0%, rgba(82,183,136,.25), transparent 50%);
+        pointer-events: none;
+    }
+    .sel-destaque > * { position: relative; }
+    .sel-destaque h2 { color: #fff; }
+    .sel-destaque .titulo-secao em { color: var(--sel-verde-claro); }
+    .sel-destaque .lead-secao { color: #c6dccf; }
+    .sel-marca { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+    .sel-marca .sel-icone {
+        width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
+        background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); font-size: 28px; color: #fff;
+    }
+    .sel-marca strong { font-family: var(--font-tech); font-size: 15px; letter-spacing: .18em; color: #fff; }
+    .sel-marca span { display: block; font-size: 13px; color: var(--sel-verde-claro); }
+    .sel-pontos { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; padding: 0; list-style: none; font-size: 14px; }
+    .sel-pontos li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--sel-verde-claro); margin-right: 8px; }
+    .btn-verde { background: var(--sel-verde-claro); color: var(--sel-verde-escuro); }
+    .btn-verde:hover { background: #fff; color: var(--sel-verde-escuro); box-shadow: 0 8px 24px rgba(82,183,136,.35); }
+    .sel-destaque .btn-contorno { color: #fff; border-color: rgba(255,255,255,.45); }
+
+    /* Prévia do portal */
+    .sel-previa { background: var(--sel-fundo); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+    .sel-previa-topo { background: var(--sel-verde-escuro); color: #fff; text-align: center; padding: 28px 16px 52px; }
+    .sel-previa-topo h3 { font-size: 22px; font-weight: 700; margin: 6px 0 4px; color: #fff; }
+    .sel-previa-topo p { margin: 0; font-size: 14px; opacity: .85; }
+    .sel-previa-selo { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
+    .sel-previa-corpo { padding: 0 clamp(16px, 3vw, 32px) 32px; }
+    .sel-boasvindas {
+        background: #fff; border-radius: 12px; border: 1px solid rgba(0,0,0,.06); border-left: 5px solid var(--sel-verde);
+        box-shadow: 0 8px 24px rgba(0,0,0,.05); padding: 18px 22px; margin: -28px auto 28px; max-width: 860px;
+    }
+    .sel-boasvindas h4 { color: var(--sel-verde); font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+    .sel-boasvindas p { margin: 0; font-size: 14px; color: var(--muted); }
+
+    .concurso-card {
+        background: #fff; border-radius: 14px; border: 1px solid rgba(0,0,0,.07); box-shadow: 0 4px 16px rgba(0,0,0,.03);
+        transition: transform .2s ease, box-shadow .2s ease; display: flex; flex-direction: column; height: 100%;
+    }
+    .concurso-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(27,67,50,.08); }
+    .concurso-card.desativado { opacity: .75; }
+    .concurso-card.desativado:hover { transform: none; box-shadow: 0 4px 16px rgba(0,0,0,.03); }
+    .concurso-topo { padding: 18px 18px 10px; }
+    .concurso-titulo {
+        font-size: 15px; font-weight: 700; color: #1a1a1a; min-height: 44px; margin: 0;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .selo-status { font-size: 12px; font-weight: 700; padding: .35em .75em; border-radius: 6px; }
+    .selo-aberto { background: #e8f5e9; color: var(--sel-verde-escuro); border: 1px solid #c8e6c9; }
+    .selo-reaberto { background: #fff4d6; color: #7a5a00; border: 1px solid #f3dd9a; }
+    .selo-finalizado { background: #f5f5f5; color: #757575; border: 1px solid #e0e0e0; }
+    .concurso-detalhes { background: #fbfcfb; border-top: 1px solid #f0f2f0; border-bottom: 1px solid #f0f2f0; padding: 14px 18px; }
+    .info-rotulo { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+    .info-valor { font-size: 13px; font-weight: 700; color: #333; }
+    .concurso-acoes { padding: 18px; margin-top: auto; }
+    .btn-baixar {
+        font-size: 12.5px; font-weight: 600; color: var(--sel-verde-escuro); background: #edf5f0; border: 1px solid #d3e8db;
+        border-radius: 6px; padding: 6px 8px; text-align: center; flex: 1; transition: all .2s ease;
+    }
+    .btn-baixar:hover { background: var(--sel-verde-escuro); color: #fff; border-color: var(--sel-verde-escuro); }
+    .btn-inscricao {
+        display: block; width: 100%; text-align: center; background: var(--sel-verde-escuro); color: #fff; font-weight: 600;
+        padding: 10px 16px; border-radius: 8px; border: none; transition: background-color .2s ease;
+    }
+    .btn-inscricao:hover { background: var(--sel-verde); color: #fff; }
+    .btn-inscricao:disabled { background: #9aa0a6; cursor: not-allowed; }
+    .sel-nota { font-size: 13px; color: var(--muted); font-style: italic; text-align: center; margin: 20px 0 0; }
+</style>
+{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Setor público</span>
+<h1>Seletivo</h1>
+<p>Portal de Inscrições para concursos e processos seletivos.</p>
+{% endblock %}
+
+{% block content %}
+<div class="sel">
+
+<section class="secao">
+    <div class="wrap">
+        <div class="sel-destaque revelar">
+            <div class="sel-marca">
+                <span class="sel-icone"><i class="fas fa-graduation-cap"></i></span>
+                <div><strong>PORTAL DE INSCRIÇÕES</strong><span>Concursos e processos seletivos</span></div>
+            </div>
+            <h2 class="titulo-secao">Do edital à inscrição, <em>tudo online.</em></h2>
+            <p class="lead-secao mb-4">Um portal para prefeituras e órgãos públicos publicarem concursos e processos seletivos, disponibilizarem editais e fichas, e receberem as inscrições dos candidatos pela internet.</p>
+            <ul class="sel-pontos">
+                <li>Publicação de editais</li>
+                <li>Inscrição online</li>
+                <li>Cadastro do candidato</li>
+                <li>Controle de prazos</li>
+                <li>Reabertura de inscrições</li>
+            </ul>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20Portal%20de%20Inscri%C3%A7%C3%B5es." target="_blank" rel="noopener" class="btn-sec btn-verde"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno"><i class="fas fa-envelope"></i> Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Recursos</span>
+            <h2 class="titulo-secao">Tudo o que o órgão precisa para <em>conduzir a seleção</em></h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-file-lines"></i></span><h3>Editais e fichas</h3><p>Disponibilize o edital e a ficha de inscrição para download em cada concurso.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-user-pen"></i></span><h3>Inscrição online</h3><p>O candidato se cadastra e faz a inscrição pela internet, sem filas e sem papel.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-calendar-days"></i></span><h3>Prazos automáticos</h3><p>As inscrições abrem e fecham sozinhas conforme as datas definidas no edital.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-rotate"></i></span><h3>Reabertura</h3><p>Reabra um concurso com novo prazo sempre que for necessário, sem refazer o cadastro.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-list-check"></i></span><h3>Status de cada seleção</h3><p>Aberto, reaberto ou finalizado: o candidato vê na hora a situação de cada concurso.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-mobile-screen"></i></span><h3>Funciona no celular</h3><p>Layout adaptado para computador, tablet e celular, para o candidato se inscrever de onde estiver.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Prévia</span>
+            <h2 class="titulo-secao">Veja como o candidato <em>enxerga o portal</em></h2>
+        </div>
+
+        <div class="sel-previa mt-4 revelar">
+            <div class="sel-previa-topo">
+                <span class="sel-previa-selo">Prefeitura Municipal</span>
+                <h3><i class="fas fa-graduation-cap me-2"></i>Portal de Inscrições</h3>
+                <p>Inscrições em Concursos e Processos Seletivos</p>
+            </div>
+
+            <div class="sel-previa-corpo">
+                <div class="sel-boasvindas">
+                    <h4>Bem-vindo ao Portal de Inscrições</h4>
+                    <p>Consulte os concursos e processos seletivos disponíveis, baixe documentos e realize sua inscrição online.</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <article class="concurso-card">
+                            <div class="concurso-topo">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="selo-status selo-reaberto"><i class="fas fa-rotate me-1"></i> Reaberto</span>
+                                    <span class="text-muted small fw-semibold">ID #11</span>
+                                </div>
+                                <h4 class="concurso-titulo">CONCURSO PREFEITURA PROCESSO SELETIVO Nº 4</h4>
+                            </div>
+                            <div class="concurso-detalhes">
+                                <div class="row g-2">
+                                    <div class="col-4"><div class="info-rotulo">Edital</div><div class="info-valor">1243/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Início</div><div class="info-valor">01/08/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Fim</div><div class="info-valor text-danger">31/08/2026</div></div>
+                                </div>
+                                <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                                    <span class="btn-baixar"><i class="fas fa-file-arrow-down me-1"></i> Edital</span>
+                                    <span class="btn-baixar"><i class="fas fa-file-lines me-1"></i> Ficha</span>
+                                </div>
+                            </div>
+                            <div class="concurso-acoes"><span class="btn-inscricao">Reabertura do Concurso</span></div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <article class="concurso-card">
+                            <div class="concurso-topo">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="selo-status selo-aberto"><i class="fas fa-circle-check me-1"></i> Aberto</span>
+                                    <span class="text-muted small fw-semibold">ID #9</span>
+                                </div>
+                                <h4 class="concurso-titulo">AUDITORIA CONCURSO 2026</h4>
+                            </div>
+                            <div class="concurso-detalhes">
+                                <div class="row g-2">
+                                    <div class="col-4"><div class="info-rotulo">Edital</div><div class="info-valor">200/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Início</div><div class="info-valor">01/09/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Fim</div><div class="info-valor">30/10/2026</div></div>
+                                </div>
+                                <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                                    <span class="btn-baixar"><i class="fas fa-file-arrow-down me-1"></i> Edital</span>
+                                    <span class="btn-baixar"><i class="fas fa-file-lines me-1"></i> Ficha</span>
+                                </div>
+                            </div>
+                            <div class="concurso-acoes"><span class="btn-inscricao">Inscrição</span></div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <article class="concurso-card desativado">
+                            <div class="concurso-topo">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="selo-status selo-finalizado"><i class="fas fa-lock me-1"></i> Finalizado</span>
+                                    <span class="text-muted small fw-semibold">ID #7</span>
+                                </div>
+                                <h4 class="concurso-titulo">PROCESSO DE SELEÇÃO SIMPLIFICADO Nº 03/2026/SMS</h4>
+                            </div>
+                            <div class="concurso-detalhes">
+                                <div class="row g-2">
+                                    <div class="col-4"><div class="info-rotulo">Edital</div><div class="info-valor">3/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Início</div><div class="info-valor text-muted">01/05/2026</div></div>
+                                    <div class="col-4"><div class="info-rotulo">Fim</div><div class="info-valor text-muted">07/06/2026</div></div>
+                                </div>
+                                <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                                    <span class="btn-baixar"><i class="fas fa-file-arrow-down me-1"></i> Edital</span>
+                                    <span class="btn-baixar"><i class="fas fa-file-lines me-1"></i> Ficha</span>
+                                </div>
+                            </div>
+                            <div class="concurso-acoes"><button class="btn-inscricao" disabled>Inscrições Finalizadas</button></div>
+                        </article>
+                    </div>
+                </div>
+                <p class="sel-nota">Imagem ilustrativa com dados de exemplo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cta-faixa revelar">
+            <div>
+                <h2>Leve o Portal de Inscrições para o seu órgão</h2>
+                <p>Fale com a nossa equipe e agende uma demonstração.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20Portal%20de%20Inscri%C3%A7%C3%B5es." target="_blank" rel="noopener" class="btn-sec btn-ouro"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno">Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+{% endblock %}

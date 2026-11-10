@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Produtos e soluções{% endblock %}
+{% block descricao %}Conheça os produtos e soluções da Seculus Desenvolvimento e Consultoria.{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Produtos e soluções</span>
+<h1>Sistemas que fazem a operação acontecer</h1>
+<p>Soluções desenvolvidas e mantidas pela Seculus para o setor público e privado.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        {% include 'partials/galeria_produtos.html' %}
+    </div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}

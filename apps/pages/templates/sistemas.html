@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sistemas{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Sistemas</span>
+<h1>Nossos sistemas</h1>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        {% include 'partials/galeria_produtos.html' %}
+    </div>
+</section>
+{% endblock %}

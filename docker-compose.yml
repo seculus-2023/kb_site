@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: django_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=arpjr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U seu_usuario -d seu_banco"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicação Django
+  web:
+    build: .
+    container_name: django_site
+    command: gunicorn seu_projeto.wsgi:sitelication --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - .:/site
+      - static_volume:/site/staticfiles
+      - media_volume:/site/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=django-insecure-ldpt97$bdsq+qoee+dg68k8zmx1$(qp7a-p_6@%hhama!utu74
+      - DATABASE_URL=postgresql://postgres:admin@db:5432/seu_banco
+      - ALLOWED_HOSTS=localhost,127.0.0.1,135.148.140.66,ARPJR.COM.BR
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Nginx como proxy reverso (opcional mas recomendado)
+  nginx:
+    image: nginx:alpine
+    container_name: django_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/site/staticfiles:ro
+      - media_volume:/site/media:ro
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

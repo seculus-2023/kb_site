@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Política{% endblock %}
+{% block descricao %}Gestão estratégica para campanhas políticas: planeje, organize e execute cada passo com precisão e segurança.{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Política</span>
+<h1>Gestão estratégica para sua campanha</h1>
+<p>Planeje, organize e execute cada passo com precisão e segurança.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 order-lg-2 revelar">
+                <span class="eyebrow">Inteligência política</span>
+                <h2 class="titulo-secao">Dados organizados para <em>decisões certas.</em></h2>
+                <p class="lead-secao mb-4">Uma plataforma para planejar, organizar e acompanhar a campanha, com acesso seguro e as informações reunidas em um só lugar.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="http://192.99.185.73:8080/campanhapolitica/com.campanha.wmlogin" target="_blank" rel="noopener" class="btn-sec btn-escuro"><i class="fas fa-right-to-bracket"></i> Acessar a plataforma</a>
+                    <a href="{% url 'contato' %}" class="btn-sec btn-contorno-escuro">Quero saber mais</a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1 revelar">
+                <img src="{% static 'img/LogoPrincipal1.png' %}" alt="Gestão estratégica para campanhas políticas" class="w-100 rounded-4 shadow-sm border">
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}

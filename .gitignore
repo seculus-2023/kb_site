@@ -1,0 +1,24 @@
+# Segredos
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Django
+db.sqlite3
+staticfiles/
+*.log
+
+# Node
+node_modules/
+
+# Sistema / editor
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Missão e valores{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">A Seculus</span>
+<h1>Missão e valores</h1>
+<p>O que nos orienta em cada projeto.</p>
+{% endblock %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  .sec-page{
+    --ink:#13233d;
+    --paper:#ffffff;
+    --green:#204f3d;
+    --amber:#a8763a;
+    --line:rgba(19,35,61,0.16);
+    --line-soft:rgba(19,35,61,0.09);
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid rgba(19,35,61,0.10);
+  }
+  .sec-status-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 28px;background:var(--ink);color:var(--paper);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;
+    text-transform:uppercase;flex-wrap:wrap;
+  }
+  .sec-status-bar .sec-dot{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:#6fbf8f;margin-right:8px;animation:sec-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes sec-pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  @media (prefers-reduced-motion: reduce){.sec-status-bar .sec-dot{animation:none;}}
+
+  .sec-wrap{max-width:760px;margin:0 auto;padding:0 28px;}
+  .sec-hero{padding:64px 0 48px;border-bottom:1px solid var(--line);}
+  .sec-eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--green);margin:0 0 22px;
+  }
+  .sec-page h1{
+    font-family:'Fraunces',serif;font-optical-sizing:auto;font-weight:500;
+    font-size:40px;line-height:1.14;letter-spacing:-0.01em;margin:0 0 22px;max-width:15ch;
+  }
+  .sec-lede{font-size:18px;color:rgba(19,35,61,0.78);max-width:52ch;margin:0;}
+  .sec-lede strong{color:var(--ink);font-weight:600;}
+
+  .sec-section{padding:48px 0;border-bottom:1px solid var(--line);}
+  .sec-section:last-of-type{border-bottom:none;}
+  .sec-section-label{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--amber);margin:0 0 20px;
+  }
+  .sec-mission-quote{
+    font-family:'Fraunces',serif;font-weight:400;font-size:24px;line-height:1.5;
+    color:var(--ink);max-width:34ch;margin:0;padding-left:24px;border-left:2px solid var(--green);
+  }
+  .sec-mission-note{
+    margin:28px 0 0;padding-left:24px;font-size:16px;color:rgba(19,35,61,0.72);max-width:56ch;
+  }
+  .sec-stack-intro{font-size:16px;color:rgba(19,35,61,0.72);max-width:56ch;margin:0 0 36px;}
+  .sec-layer{
+    display:grid;grid-template-columns:96px 1fr;gap:20px;padding:24px 0;
+    border-top:1px solid var(--line-soft);
+  }
+  .sec-layer:last-child{padding-bottom:0;}
+  .sec-layer-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);padding-top:3px;}
+  .sec-layer-tag span{display:block;color:rgba(19,35,61,0.5);font-size:11px;margin-top:4px;}
+  .sec-layer h3{font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:0 0 8px;color:var(--ink);}
+  .sec-layer p{margin:0;font-size:15.5px;color:rgba(19,35,61,0.78);max-width:52ch;}
+
+  .sec-footer{
+    padding:36px 28px 44px;display:flex;justify-content:space-between;
+    align-items:flex-end;flex-wrap:wrap;gap:16px;
+  }
+  .sec-foot-brand{font-family:'Fraunces',serif;font-weight:500;font-size:17px;}
+  .sec-foot-meta{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(19,35,61,0.55);text-align:right;
+  }
+
+  @media (max-width:600px){
+    .sec-page h1{font-size:30px;}
+    .sec-mission-quote{font-size:21px;}
+    .sec-layer{grid-template-columns:1fr;gap:6px;}
+    .sec-hero{padding:48px 0 32px;}
+    .sec-footer{flex-direction:column;align-items:flex-start;}
+    .sec-foot-meta{text-align:left;}
+  }
+</style>
+
+<section class="secao">
+<div class="wrap-estreito">
+
+    <div class="sec-page">
+
+        <div class="sec-wrap">
+          <header class="sec-hero">
+            <p class="sec-eyebrow">Seculus Desenvolvimento e Consultoria Ltda</p>
+            <h1>Tecnologia que sustenta serviços públicos e negócios privados.</h1>
+            <p class="sec-lede">Projetamos, desenvolvemos e mantemos sistemas em <strong>GeneXus</strong> — da gestão pública municipal a operações de empresas privadas — com o compromisso de que cada sistema entregue continue funcionando, seguro e útil, muito depois da entrega.</p>
+          </header>
+
+          <section class="sec-section">
+            <p class="sec-section-label">Missão</p>
+            <p class="sec-mission-quote">Transformar processos públicos e privados em sistemas confiáveis, simples de usar e prontos para durar.</p>
+            <p class="sec-mission-note">Atuamos como parceira técnica de longo prazo — não apenas construindo software, mas entendendo o processo real por trás de cada tela: o cidadão que abre um protocolo, o servidor que analisa um requerimento, a empresa que precisa de um sistema sob medida para operar melhor.</p>
+          </section>
+
+          <section class="sec-section">
+            <p class="sec-section-label">Valores</p>
+            <p class="sec-stack-intro">Como em qualquer sistema bem projetado, nossos valores formam camadas: da confiabilidade que sustenta tudo por baixo, até a simplicidade que o usuário final encontra na tela.</p>
+
+            <div class="sec-layer">
+              <div class="sec-layer-tag">Camada 01<span>fundação</span></div>
+              <div>
+                <h3>Confiabilidade</h3>
+                <p>Sistemas públicos não têm tolerância para instabilidade — uma falha vira fila, atraso ou prejuízo real para quem depende do serviço. Construímos para o dia a dia, não para a demonstração.</p>
+              </div>
+            </div>
+
+            <div class="sec-layer">
+              <div class="sec-layer-tag">Camada 02<span>lógica</span></div>
+              <div>
+                <h3>Precisão técnica</h3>
+                <p>Modelagem de dados, regras de negócio e arquitetura em GeneXus feitas para acertar desde a primeira entrega — e para serem entendidas por quem for dar manutenção depois de nós.</p>
+              </div>
+            </div>
+
+            <div class="sec-layer">
+              <div class="sec-layer-tag">Camada 03<span>relação</span></div>
+              <div>
+                <h3>Compromisso público</h3>
+                <p>Entendemos a responsabilidade de desenvolver para prefeituras e órgãos públicos: prazo, transparência de escopo e respeito ao dinheiro público orientam cada projeto que assumimos.</p>
+              </div>
+            </div>
+
+            <div class="sec-layer">
+              <div class="sec-layer-tag">Camada 04<span>processo</span></div>
+              <div>
+                <h3>Transparência</h3>
+                <p>Cliente público ou privado sabe, a qualquer momento, o que já foi entregue, o que está em andamento e quais riscos existem no caminho. Sem letras miúdas.</p>
+              </div>
+            </div>
+
+            <div class="sec-layer">
+              <div class="sec-layer-tag">Camada 05<span>interface</span></div>
+              <div>
+                <h3>Simplicidade</h3>
+                <p>A camada que o usuário final realmente vê. Um sistema só cumpre sua missão quando o atendente, o gestor ou o cidadão conseguem usá-lo sem manual.</p>
+              </div>
+            </div>
+          </section>
+
+          <footer class="sec-footer">
+            <div class="sec-foot-brand">Seculus</div>
+            <div class="sec-foot-meta">Desenvolvimento e Consultoria em Tecnologia<br>Sistemas públicos e privados em GeneXus</div>
+          </footer>
+        </div>
+    </div>
+</div>
+</section>
+
+{% include 'partials/cta.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock scripts %}

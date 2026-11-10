@@ -1,0 +1,23 @@
+# Blocos do site Seculus para o Caddyfile do servidor
+# (C:\webapps\caddy\Caddyfile, o mesmo usado pelo BolsaTrader).
+# O Django do site roda só internamente em 127.0.0.1:18002
+# (deploy\caddy\iniciar_site.bat).
+
+# Domínio (passa pela Cloudflare). Certificado Let's Encrypt de 90 dias.
+# Na Cloudflare: SSL/TLS -> modo "Full (strict)".
+arpjr.com.br, www.arpjr.com.br {
+	encode gzip
+	reverse_proxy 127.0.0.1:18002
+}
+
+# Acesso direto pelo IP. Certificado de IP do Let's Encrypt (~6 dias,
+# perfil "shortlived"); o Caddy renova sozinho enquanto estiver rodando.
+https://24.152.36.103:8002 {
+	tls {
+		issuer acme {
+			profile shortlived
+		}
+	}
+	encode gzip
+	reverse_proxy 127.0.0.1:18002
+}

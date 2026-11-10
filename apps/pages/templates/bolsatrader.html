@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BolsaTrader{% endblock %}
+{% block descricao %}BolsaTrader: organize suas compras e vendas de ações da B3 em um só lugar. Preço médio automático, lucro e perda em tempo real, avisos automáticos e análise de tendência.{% endblock %}
+{% block og_titulo %}BolsaTrader | Seculus{% endblock %}
+
+{% block head %}
+<style>
+    .bt-icone { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 0 24px rgba(0,229,255,.35); }
+    .bt-marca { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+    .bt-marca strong { font-family: var(--font-tech); font-size: 15px; letter-spacing: .18em; color: var(--cream); }
+    .bt-marca span { display: block; font-size: 13px; color: var(--cyan); }
+    .bt-destaque {
+        background: linear-gradient(160deg, #0d1a33, var(--navy-950));
+        border: 1px solid rgba(0,229,255,.18);
+        border-radius: 20px;
+        padding: clamp(28px, 5vw, 56px);
+        color: var(--sand);
+        position: relative;
+        overflow: hidden;
+    }
+    .bt-destaque::before {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(circle at 90% 0%, rgba(0,229,255,.16), transparent 50%),
+                    radial-gradient(circle at 0% 100%, rgba(139,92,246,.18), transparent 45%);
+        pointer-events: none;
+    }
+    .bt-destaque > * { position: relative; }
+    .bt-destaque h2 { color: var(--cream); }
+    .bt-destaque .lead-secao { color: #b9c2d0; }
+    .bt-pontos { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; padding: 0; list-style: none; font-size: 14px; color: #d7e3f4; }
+    .bt-pontos li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--cyan); margin-right: 8px; }
+    .bt-imagem { width: 100%; max-width: 420px; border-radius: 18px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+    .btn-ciano { background: var(--cyan); color: var(--navy-950); }
+    .btn-ciano:hover { background: #fff; color: var(--navy-950); box-shadow: 0 8px 24px rgba(0,229,255,.35); }
+    .bt-aviso { font-size: 13px; color: var(--muted); font-style: italic; max-width: 80ch; margin: 32px auto 0; text-align: center; }
+</style>
+{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Mercado financeiro</span>
+<h1>BolsaTrader</h1>
+<p>Organize suas compras e vendas de ações da B3 em um só lugar.</p>
+{% endblock %}
+
+{% block content %}
+<section class="secao">
+    <div class="wrap">
+        <div class="bt-destaque revelar">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-7">
+                    <div class="bt-marca">
+                        <img src="{% static 'img/bolsatrader/icone.png' %}" alt="" class="bt-icone">
+                        <div><strong>BOLSATRADER</strong><span>Versão 2.0</span></div>
+                    </div>
+                    <h2 class="titulo-secao">Sua carteira de ações acompanhada <em>em tempo real.</em></h2>
+                    <p class="lead-secao mb-4">Registre suas operações e deixe o BolsaTrader calcular preço médio, lucro e perda, e avisar quando suas metas forem atingidas.</p>
+                    <ul class="bt-pontos">
+                        <li>Preço médio automático</li>
+                        <li>Lucro e perda em tempo real</li>
+                        <li>Avisos automáticos</li>
+                        <li>Análise de tendência</li>
+                    </ul>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20BolsaTrader." target="_blank" rel="noopener" class="btn-sec btn-ciano"><i class="fab fa-whatsapp"></i> Solicitar acesso</a>
+                        <a href="https://bolsatrader.duckdns.org" target="_blank" rel="noopener" class="btn-sec btn-contorno"><i class="fas fa-right-to-bracket"></i> Já tenho conta</a>
+                        <a href="{% static 'pdf/Manual_Operacional_BolsaTrader.pdf' %}" download="Manual_Operacional_BolsaTrader.pdf" class="btn-sec btn-contorno"><i class="fas fa-file-pdf"></i> Baixar manual (PDF)</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center">
+                    <img src="{% static 'img/bolsatrader/divulgacao.png' %}" alt="BolsaTrader: suas ações em um só lugar, no computador, Android e iPhone" class="bt-imagem" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Recursos</span>
+            <h2 class="titulo-secao">Tudo o que você precisa para <em>acompanhar sua carteira</em></h2>
+        </div>
+        <div class="grade grade-4 mt-4">
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-calculator"></i></span><h3>Preço médio automático</h3><p>Calcula sozinho o preço médio de cada ativo, mesmo com várias compras diferentes.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-sack-dollar"></i></span><h3>Lucro e perda em tempo real</h3><p>Acompanhe o resultado de cada posição e da carteira toda, em reais e em percentual.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-bell"></i></span><h3>Avisos automáticos</h3><p>Seja avisado assim que uma posição atingir a meta de lucro ou de perda definida.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-chart-line"></i></span><h3>Sinal de tendência</h3><p>Média móvel indica possível alta, baixa ou estabilidade para os ativos da sua carteira.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-trophy"></i></span><h3>Maiores altas e baixas</h3><p>Veja o Top 10 de altas e o Top 10 de baixas de toda a B3, não apenas da sua carteira.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-users"></i></span><h3>Mural da comunidade</h3><p>Acompanhe a atividade de outros investidores com privacidade: sem valores, sem quantidades.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-mobile-screen"></i></span><h3>Instalável como app</h3><p>Funciona no computador, Android e iOS, com ícone próprio e acesso rápido offline.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-lock"></i></span><h3>Sua carteira é só sua</h3><p>Operações, posições e valores são privados: só você vê os detalhes da sua conta.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cta-faixa revelar">
+            <div>
+                <h2>Comece agora mesmo</h2>
+                <p>Peça acesso e crie sua conta gratuita em menos de um minuto.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20BolsaTrader." target="_blank" rel="noopener" class="btn-sec btn-ouro"><i class="fab fa-whatsapp"></i> Solicitar acesso</a>
+                <a href="https://bolsatrader.duckdns.org" target="_blank" rel="noopener" class="btn-sec btn-contorno">Acessar o BolsaTrader</a>
+                <a href="{% static 'pdf/Manual_Operacional_BolsaTrader.pdf' %}" download="Manual_Operacional_BolsaTrader.pdf" class="btn-sec btn-contorno"><i class="fas fa-file-pdf"></i> Baixar manual (PDF)</a>
+            </div>
+        </div>
+        <p class="bt-aviso">O BolsaTrader é uma ferramenta de organização pessoal e apoio à decisão. Cotações, percentuais de lucro/perda e sinais de tendência não constituem recomendação de investimento.</p>
+    </div>
+</section>
+{% endblock %}
