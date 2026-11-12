@@ -1,0 +1,124 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+  .rel-filtros { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 20px; }
+  .rel-filtros a { padding:5px 12px; border:1px solid var(--hairline-color); border-radius:4px; text-decoration:none; }
+  .rel-filtros a.ativo { background:var(--primary); color:var(--primary-fg); border-color:var(--primary); }
+  .rel-filtros .sep { flex:1; }
+  .rel-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:24px; }
+  .rel-card { border:1px solid var(--hairline-color); border-radius:6px; padding:14px 16px; background:var(--body-bg); }
+  .rel-card .n { font-size:28px; font-weight:600; color:var(--body-fg); line-height:1.2; }
+  .rel-card .l { color:var(--body-quiet-color); font-size:13px; }
+  .rel-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; margin-bottom:24px; }
+  .rel-box { border:1px solid var(--hairline-color); border-radius:6px; padding:12px 16px; }
+  .rel-box h2 { margin:0 0 10px; font-size:15px; background:none; color:var(--body-fg); padding:0; }
+  .rel-lista { width:100%; border:0; }
+  .rel-lista td { padding:4px 0; border:0; vertical-align:middle; }
+  .rel-lista td.nome { width:45%; overflow-wrap:anywhere; padding-right:8px; }
+  .rel-lista td.num { width:56px; text-align:right; font-variant-numeric:tabular-nums; color:var(--body-fg); }
+  .barra { height:8px; background:var(--primary); border-radius:0 4px 4px 0; min-width:2px; }
+  .rel-dias td.dia { width:110px; white-space:nowrap; }
+  .rel-vazio { color:var(--body-quiet-color); }
+  .rel-tabela { width:100%; }
+  .rel-tabela td { overflow-wrap:anywhere; }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+  &rsaquo; <a href="{% url 'admin:pages_acesso_changelist' %}">Acessos</a>
+  &rsaquo; Relatório
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+  <div class="rel-filtros">
+    <strong>Período:</strong>
+    {% for chave, nome in periodos.items %}
+      <a href="?dias={{ chave }}{% if incluir_robos %}&robos=1{% endif %}" class="{% if chave == dias %}ativo{% endif %}">{{ nome }}</a>
+    {% endfor %}
+    <a href="?dias={{ dias }}{% if not incluir_robos %}&robos=1{% endif %}">{% if incluir_robos %}Esconder robôs{% else %}Incluir robôs{% endif %}</a>
+    <span class="sep"></span>
+    <a href="{{ url_csv }}?dias={{ dias }}{% if incluir_robos %}&robos=1{% endif %}">⬇ Baixar CSV (Excel)</a>
+  </div>
+
+  <p class="rel-vazio">Desde {{ inicio|date:"d/m/Y" }}{% if not incluir_robos %} · sem contar robôs (Google, scanners etc.){% endif %}</p>
+
+  <div class="rel-cards">
+    <div class="rel-card"><div class="n">{{ total }}</div><div class="l">páginas vistas</div></div>
+    <div class="rel-card"><div class="n">{{ visitantes }}</div><div class="l">visitantes (IPs diferentes)</div></div>
+    <div class="rel-card"><div class="n">{{ robos }}</div><div class="l">acessos de robôs no período</div></div>
+  </div>
+
+  <div class="rel-box" style="margin-bottom:20px">
+    <h2>Acessos por dia</h2>
+    {% if por_dia %}
+    <table class="rel-lista rel-dias">
+      {% for d in por_dia %}
+      <tr title="{{ d.dia|date:'d/m/Y' }}: {{ d.total }} páginas vistas, {{ d.visitantes }} visitantes">
+        <td class="dia">{{ d.dia|date:"D d/m" }}</td>
+        <td><div class="barra" style="width:{{ d.pct }}%"></div></td>
+        <td class="num">{{ d.total }}</td>
+        <td class="num" style="width:90px">{{ d.visitantes }} visit.</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="rel-vazio">Nenhum acesso no período.</p>{% endif %}
+  </div>
+
+  <div class="rel-grid">
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Páginas mais vistas" linhas=paginas %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="De onde vieram (sites que mandaram visitantes)" linhas=origens %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Países" linhas=paises %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Dispositivos" linhas=dispositivos %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Navegadores" linhas=navegadores %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Sistemas" linhas=sistemas %}
+  </div>
+
+  <div class="rel-grid">
+    <div class="rel-box">
+      <h2>Visitantes que mais acessaram</h2>
+      {% if visitantes_top %}
+      <table class="rel-tabela">
+        <thead><tr><th>IP</th><th>País</th><th style="text-align:right">Páginas</th></tr></thead>
+        <tbody>
+        {% for v in visitantes_top %}
+          <tr><td><a href="{% url 'admin:pages_acesso_changelist' %}?q={{ v.ip }}">{{ v.ip|default:"?" }}</a></td><td>{{ v.pais|default:"-" }}</td><td style="text-align:right">{{ v.total }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="rel-vazio">Nada ainda.</p>{% endif %}
+    </div>
+  </div>
+
+  <div class="rel-box">
+    <h2>Últimos acessos</h2>
+    {% if ultimos %}
+    <table class="rel-tabela">
+      <thead><tr><th>Quando</th><th>IP</th><th>País</th><th>Página</th><th>Veio de</th><th>Dispositivo</th><th>Navegador</th></tr></thead>
+      <tbody>
+      {% for a in ultimos %}
+        <tr>
+          <td style="white-space:nowrap">{{ a.data|date:"d/m H:i" }}</td>
+          <td>{{ a.ip|default:"?" }}</td>
+          <td>{{ a.pais|default:"-" }}</td>
+          <td>{{ a.caminho }}</td>
+          <td>{{ a.origem|default:"-" }}</td>
+          <td>{{ a.dispositivo }}</td>
+          <td>{{ a.navegador }} / {{ a.sistema }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p><a href="{% url 'admin:pages_acesso_changelist' %}">Ver todos os acessos com filtros →</a></p>
+    {% else %}<p class="rel-vazio">Nenhum acesso no período.</p>{% endif %}
+  </div>
+
+</div>
+{% endblock %}

@@ -102,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'pages.acessos.AcessoMiddleware',  # registra as visitas (relatório no admin)
 ]
 
 ROOT_URLCONF = 'core.urls'

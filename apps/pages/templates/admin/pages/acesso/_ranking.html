@@ -1,0 +1,14 @@
+<div class="rel-box">
+  <h2>{{ titulo }}</h2>
+  {% if linhas %}
+  <table class="rel-lista">
+    {% for l in linhas %}
+    <tr title="{{ l.nome }}: {{ l.total }}">
+      <td class="nome">{{ l.nome }}</td>
+      <td><div class="barra" style="width:{{ l.pct }}%"></div></td>
+      <td class="num">{{ l.total }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="rel-vazio">Nada ainda.</p>{% endif %}
+</div>
