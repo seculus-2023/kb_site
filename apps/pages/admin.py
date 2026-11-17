@@ -37,9 +37,9 @@ PERIODOS = {'1': 'Hoje', '7': '7 dias', '30': '30 dias', '90': '90 dias', '365':
 
 @admin.register(Acesso)
 class AcessoAdmin(admin.ModelAdmin):
-    list_display = ('data', 'ip', 'pais', 'caminho', 'origem', 'dispositivo', 'navegador', 'sistema', 'robo')
-    list_filter = ('robo', 'dispositivo', 'navegador', 'sistema', 'pais', 'data')
-    search_fields = ('ip', 'caminho', 'origem', 'user_agent')
+    list_display = ('data', 'ip', 'pais', 'regiao', 'cidade', 'caminho', 'origem', 'dispositivo', 'navegador', 'sistema', 'robo')
+    list_filter = ('robo', 'dispositivo', 'navegador', 'sistema', 'pais', 'regiao', 'data')
+    search_fields = ('ip', 'cidade', 'regiao', 'caminho', 'origem', 'user_agent')
     date_hierarchy = 'data'
     list_per_page = 100
     change_list_template = 'admin/pages/acesso/change_list.html'
@@ -80,6 +80,16 @@ class AcessoAdmin(admin.ModelAdmin):
             for l in linhas
         ]
 
+    @staticmethod
+    def _ranking_cidades(qs, limite=10):
+        linhas = list(qs.values('cidade', 'regiao', 'pais').annotate(total=Count('id')).order_by('-total')[:limite])
+        maior = linhas[0]['total'] if linhas else 1
+        return [
+            {'nome': ', '.join(x for x in (l['cidade'], l['regiao'], l['pais']) if x) or '(sem informação)',
+             'total': l['total'], 'pct': round(l['total'] * 100 / maior)}
+            for l in linhas
+        ]
+
     def relatorio(self, request):
         dias, inicio, incluir_robos, qs = self._periodo(request)
 
@@ -106,11 +116,12 @@ class AcessoAdmin(admin.ModelAdmin):
             'paginas': self._ranking(qs, 'caminho', vazio='/'),
             'origens': self._ranking(qs, 'origem'),
             'paises': self._ranking(qs, 'pais', vazio='(sem informação)'),
+            'cidades': self._ranking_cidades(qs),
             'dispositivos': self._ranking(qs, 'dispositivo'),
             'navegadores': self._ranking(qs, 'navegador'),
             'sistemas': self._ranking(qs, 'sistema'),
             'visitantes_top': list(
-                qs.values('ip', 'pais').annotate(total=Count('id')).order_by('-total')[:15]
+                qs.values('ip', 'pais', 'cidade').annotate(total=Count('id')).order_by('-total')[:15]
             ),
             'ultimos': qs[:30],
             'url_csv': reverse('admin:pages_acesso_relatorio_csv'),
@@ -123,10 +134,10 @@ class AcessoAdmin(admin.ModelAdmin):
         resposta['Content-Disposition'] = f'attachment; filename="acessos_{dias}dias.csv"'
         resposta.write('﻿')  # BOM para o Excel abrir os acentos certo
         escritor = csv.writer(resposta, delimiter=';')
-        escritor.writerow(['Data', 'IP', 'País', 'Página', 'Veio de', 'Dispositivo', 'Navegador', 'Sistema', 'Robô', 'User-Agent'])
+        escritor.writerow(['Data', 'IP', 'País', 'Estado', 'Cidade', 'Página', 'Veio de', 'Dispositivo', 'Navegador', 'Sistema', 'Robô', 'User-Agent'])
         for a in qs.iterator():
             escritor.writerow([
-                timezone.localtime(a.data).strftime('%d/%m/%Y %H:%M:%S'), a.ip, a.pais, a.caminho,
+                timezone.localtime(a.data).strftime('%d/%m/%Y %H:%M:%S'), a.ip, a.pais, a.regiao, a.cidade, a.caminho,
                 a.referencia, a.dispositivo, a.navegador, a.sistema, 'sim' if a.robo else 'não', a.user_agent,
             ])
         return resposta

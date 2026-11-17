@@ -48,6 +48,8 @@ class Acesso(models.Model):
     data = models.DateTimeField(auto_now_add=True, db_index=True)
     ip = models.GenericIPAddressField(null=True, blank=True)
     pais = models.CharField('país', max_length=2, blank=True)
+    regiao = models.CharField('estado/região', max_length=100, blank=True)
+    cidade = models.CharField(max_length=100, blank=True, db_index=True)
     caminho = models.CharField('página', max_length=500)
     referencia = models.CharField('veio de (URL)', max_length=500, blank=True)
     origem = models.CharField('veio de (site)', max_length=200, blank=True, db_index=True)

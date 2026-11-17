@@ -32,6 +32,17 @@ def ip_do_visitante(request):
     return remoto or None
 
 
+def cabecalho_texto(request, nome, limite):
+    """Lê um cabeçalho de texto livre (ex.: cidade). A Cloudflare manda UTF-8,
+    mas o WSGI entrega os cabeçalhos como latin-1 ("SÃ£o Paulo"); aqui corrige."""
+    valor = (request.META.get(nome) or '').strip()
+    try:
+        valor = valor.encode('latin-1').decode('utf-8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+    return valor[:limite]
+
+
 def analisar_user_agent(ua):
     """Classificação simples (sem biblioteca externa) de navegador/sistema/dispositivo."""
     u = ua.lower()
@@ -127,6 +138,10 @@ class AcessoMiddleware:
         Acesso.objects.create(
             ip=ip_do_visitante(request),
             pais=(request.META.get('HTTP_CF_IPCOUNTRY') or '')[:2].upper(),
+            # Cidade/estado: precisa ligar "Add visitor location headers" na Cloudflare
+            # (Rules > Transform Rules > Managed Transforms).
+            regiao=cabecalho_texto(request, 'HTTP_CF_REGION', 100),
+            cidade=cabecalho_texto(request, 'HTTP_CF_IPCITY', 100),
             caminho=caminho,
             referencia=referencia,
             origem=origem,

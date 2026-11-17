@@ -76,6 +76,7 @@
     {% include "admin/pages/acesso/_ranking.html" with titulo="Páginas mais vistas" linhas=paginas %}
     {% include "admin/pages/acesso/_ranking.html" with titulo="De onde vieram (sites que mandaram visitantes)" linhas=origens %}
     {% include "admin/pages/acesso/_ranking.html" with titulo="Países" linhas=paises %}
+    {% include "admin/pages/acesso/_ranking.html" with titulo="Cidades" linhas=cidades %}
     {% include "admin/pages/acesso/_ranking.html" with titulo="Dispositivos" linhas=dispositivos %}
     {% include "admin/pages/acesso/_ranking.html" with titulo="Navegadores" linhas=navegadores %}
     {% include "admin/pages/acesso/_ranking.html" with titulo="Sistemas" linhas=sistemas %}
@@ -86,10 +87,10 @@
       <h2>Visitantes que mais acessaram</h2>
       {% if visitantes_top %}
       <table class="rel-tabela">
-        <thead><tr><th>IP</th><th>País</th><th style="text-align:right">Páginas</th></tr></thead>
+        <thead><tr><th>IP</th><th>País</th><th>Cidade</th><th style="text-align:right">Páginas</th></tr></thead>
         <tbody>
         {% for v in visitantes_top %}
-          <tr><td><a href="{% url 'admin:pages_acesso_changelist' %}?q={{ v.ip }}">{{ v.ip|default:"?" }}</a></td><td>{{ v.pais|default:"-" }}</td><td style="text-align:right">{{ v.total }}</td></tr>
+          <tr><td><a href="{% url 'admin:pages_acesso_changelist' %}?q={{ v.ip }}">{{ v.ip|default:"?" }}</a></td><td>{{ v.pais|default:"-" }}</td><td>{{ v.cidade|default:"-" }}</td><td style="text-align:right">{{ v.total }}</td></tr>
         {% endfor %}
         </tbody>
       </table>
@@ -101,13 +102,13 @@
     <h2>Últimos acessos</h2>
     {% if ultimos %}
     <table class="rel-tabela">
-      <thead><tr><th>Quando</th><th>IP</th><th>País</th><th>Página</th><th>Veio de</th><th>Dispositivo</th><th>Navegador</th></tr></thead>
+      <thead><tr><th>Quando</th><th>IP</th><th>Local</th><th>Página</th><th>Veio de</th><th>Dispositivo</th><th>Navegador</th></tr></thead>
       <tbody>
       {% for a in ultimos %}
         <tr>
           <td style="white-space:nowrap">{{ a.data|date:"d/m H:i" }}</td>
           <td>{{ a.ip|default:"?" }}</td>
-          <td>{{ a.pais|default:"-" }}</td>
+          <td>{% if a.cidade %}{{ a.cidade }}{% if a.regiao %} / {{ a.regiao }}{% endif %} · {% endif %}{{ a.pais|default:"-" }}</td>
           <td>{{ a.caminho }}</td>
           <td>{{ a.origem|default:"-" }}</td>
           <td>{{ a.dispositivo }}</td>
