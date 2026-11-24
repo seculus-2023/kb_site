@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MedAccess · Gestão de Clínicas{% endblock %}
+{% block descricao %}MedAccess: sistema de gestão para clínicas e consultórios. Agenda e marcação online, prontuário eletrônico, receitas com checagem de interações, convênios e TISS, financeiro, estoque, senhas com painel de TV e WhatsApp automático.{% endblock %}
+{% block og_titulo %}MedAccess · Gestão de Clínicas | Seculus{% endblock %}
+
+{% block head %}
+<style>
+    .cli {
+        --cli-escuro: #0b1f24;
+        --cli-escuro-2: #12303a;
+        --cli-primaria: #139e86;
+        --cli-clara: #2bc4a6;
+        --cli-fundo: #f2f6f7;
+    }
+    .cli-destaque {
+        background: linear-gradient(160deg, var(--cli-escuro-2), var(--cli-escuro));
+        border-radius: 20px; padding: clamp(28px, 5vw, 56px); color: #d4e8e4;
+        position: relative; overflow: hidden;
+    }
+    .cli-destaque::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(circle at 90% 0%, rgba(43,196,166,.28), transparent 50%);
+    }
+    .cli-destaque > * { position: relative; }
+    .cli-destaque h2 { color: #fff; }
+    .cli-destaque .titulo-secao em { color: var(--cli-clara); }
+    .cli-destaque .lead-secao { color: #b9d3ce; }
+    .cli-marca { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+    .cli-marca .cli-icone {
+        width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; flex-shrink: 0;
+        background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); font-size: 28px; color: var(--cli-clara);
+    }
+    .cli-marca strong { font-family: var(--font-tech); font-size: 15px; letter-spacing: .18em; color: #fff; }
+    .cli-marca span { display: block; font-size: 13px; color: var(--cli-clara); }
+    .cli-pontos { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; padding: 0; list-style: none; font-size: 14px; }
+    .cli-pontos li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--cli-clara); margin-right: 8px; }
+    .btn-cli { background: var(--cli-clara); color: var(--cli-escuro); }
+    .btn-cli:hover { background: #fff; color: var(--cli-escuro); box-shadow: 0 8px 24px rgba(43,196,166,.35); }
+    .cli-destaque .btn-contorno { color: #fff; border-color: rgba(255,255,255,.45); }
+
+    /* Jornada do paciente */
+    .cli-fluxo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 16px; counter-reset: passo; margin: 0; padding: 0; list-style: none; }
+    .cli-fluxo li {
+        counter-increment: passo; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 20px 16px; text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .cli-fluxo li::before {
+        content: counter(passo); display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 12px;
+        border-radius: 50%; background: var(--cli-primaria); color: #fff; font-weight: 700;
+    }
+    .cli-fluxo strong { display: block; font-size: 15px; margin-bottom: 4px; color: var(--ink); }
+    .cli-fluxo span { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .cli-perfil { text-align: center; }
+    .cli-perfil .cartao-icone { margin-left: auto; margin-right: auto; }
+
+    /* Prévias */
+    .cli-janela { background: var(--cli-fundo); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; height: 100%; box-shadow: var(--shadow-sm); color: #1b2b30; }
+    .cli-janela-topo { background: var(--cli-primaria); color: #fff; padding: 12px 18px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+    .cli-janela-topo .pontinhos { margin-left: auto; display: flex; gap: 5px; }
+    .cli-janela-topo .pontinhos i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.5); display: block; }
+    .cli-janela-corpo { padding: 18px; }
+    .cli-janela-corpo .titulo-mini { font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+
+    .cli-agenda { list-style: none; margin: 0; padding: 0; }
+    .cli-agenda li { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 10px; background: #fff; border: 1px solid #e1e9eb; border-radius: 8px; padding: 9px 12px; margin-bottom: 8px; font-size: 12.5px; }
+    .cli-agenda li:last-child { margin-bottom: 0; }
+    .cli-agenda .hora { font-weight: 800; color: #0f8a74; }
+    .cli-agenda small { display: block; color: #6b7f86; font-size: 11px; }
+    .cli-st { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+    .cli-st.conf { background: #d9f3ec; color: #0b6b5a; }
+    .cli-st.cheg { background: #dbeafe; color: #1e40af; }
+    .cli-st.atend { background: #fef3c7; color: #92400e; }
+    .cli-st.tele { background: #ede9fe; color: #5b21b6; }
+
+    .cli-sinais { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .cli-sinais div { background: #fff; border: 1px solid #e1e9eb; border-radius: 8px; padding: 8px; text-align: center; font-size: 10.5px; color: #6b7f86; }
+    .cli-sinais b { display: block; font-size: 14px; color: #1b2b30; }
+    .cli-receita { background: #fff; border: 1px solid #e1e9eb; border-radius: 8px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 8px; }
+    .cli-alerta { background: #fff7ed; border: 1px solid #fed7aa; border-left: 5px solid #f97316; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #9a3412; }
+    .cli-alerta strong { display: block; margin-bottom: 2px; }
+
+    .cli-tv { background: var(--cli-escuro); border-radius: 10px; padding: 18px; color: #fff; display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+    .cli-tv-atual { text-align: center; border-right: 1px solid rgba(255,255,255,.12); padding-right: 16px; }
+    .cli-tv-atual small { display: block; letter-spacing: .2em; font-size: 11px; color: var(--cli-clara); }
+    .cli-tv-atual strong { display: block; font-size: clamp(40px, 8vw, 64px); font-weight: 900; line-height: 1.05; }
+    .cli-tv-atual span { font-size: 15px; font-weight: 600; }
+    .cli-tv ul { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+    .cli-tv li { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.1); color: #b9d3ce; }
+    .cli-tv li b { color: #fff; }
+
+    .cli-nota { font-size: 13px; color: var(--muted); font-style: italic; text-align: center; margin: 20px 0 0; }
+
+    @media (max-width: 575px) {
+        .cli-sinais { grid-template-columns: repeat(2, 1fr); }
+        .cli-tv { grid-template-columns: 1fr; }
+        .cli-tv-atual { border-right: 0; padding-right: 0; border-bottom: 1px solid rgba(255,255,255,.12); padding-bottom: 12px; }
+    }
+</style>
+{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">Segmentos · Saúde</span>
+<h1>MedAccess · Gestão de Clínicas</h1>
+<p>Da marcação da consulta ao faturamento do convênio, a clínica inteira em um só sistema.</p>
+{% endblock %}
+
+{% block content %}
+<div class="cli">
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cli-destaque revelar">
+            <div class="cli-marca">
+                <span class="cli-icone"><i class="fas fa-stethoscope"></i></span>
+                <div><strong>MEDACCESS</strong><span>Clínicas e consultórios</span></div>
+            </div>
+            <h2 class="titulo-secao">A clínica organizada, <em>do agendamento ao faturamento.</em></h2>
+            <p class="lead-secao mb-4">Sistema web que pode ser instalado como aplicativo no computador e no celular. Agenda, prontuário eletrônico, receitas, convênios, financeiro e estoque ficam juntos, e o contato com o paciente sai automático pelo WhatsApp da própria clínica. Atende uma ou várias unidades, cada uma com seus dados e usuários.</p>
+            <ul class="cli-pontos">
+                <li>Marcação online</li>
+                <li>Prontuário eletrônico</li>
+                <li>Teleconsulta</li>
+                <li>Convênios e TISS</li>
+                <li>WhatsApp automático</li>
+                <li>Aplicativo instalável</li>
+            </ul>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20sistema%20MedAccess%20para%20cl%C3%ADnicas." target="_blank" rel="noopener" class="btn-sec btn-cli"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno"><i class="fas fa-envelope"></i> Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Como funciona</span>
+            <h2 class="titulo-secao">A jornada do paciente <em>registrada de ponta a ponta</em></h2>
+        </div>
+        <ol class="cli-fluxo mt-4 revelar">
+            <li><strong>Marcação</strong><span>O paciente escolhe especialidade, médico e horário pela página da clínica, ou a recepção marca.</span></li>
+            <li><strong>Confirmação</strong><span>Lembrete pelo WhatsApp 24h antes. Basta responder SIM ou NÃO.</span></li>
+            <li><strong>Chegada</strong><span>Check-in digital com aceite LGPD, senha impressa e chamada no painel de TV.</span></li>
+            <li><strong>Atendimento</strong><span>O médico registra o prontuário, prescreve e assina os documentos.</span></li>
+            <li><strong>Faturamento</strong><span>Recebimento no caixa ou guia TISS do convênio gerada ao concluir.</span></li>
+            <li><strong>Pós-consulta</strong><span>Pesquisa NPS, retornos e contato do call center para faltas.</span></li>
+        </ol>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Quem usa</span>
+            <h2 class="titulo-secao">Uma área para cada <em>perfil de acesso</em></h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-headset"></i></span><h3>Recepção</h3><p>Marca consultas, confirma presença, faz o check-in e chama as senhas. Não tem acesso ao prontuário.</p></article>
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-user-doctor"></i></span><h3>Médico</h3><p>Aplicativo próprio com a agenda do dia. O acesso ao prontuário é definido por profissional: não acessa, somente consulta ou consulta e registro.</p></article>
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-calculator"></i></span><h3>Financeiro</h3><p>Contas a pagar e receber, caixa, repasse médico, convênios, glosas e estoque.</p></article>
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-hospital-user"></i></span><h3>Paciente</h3><p>Portal com acesso por código enviado no WhatsApp ou e-mail. Ali o paciente consulta agendamentos, documentos e exames liberados.</p></article>
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-user-gear"></i></span><h3>Gestor</h3><p>Painel com indicadores, relatórios e BI, configurações da clínica e permissão por módulo (sem acesso, ver ou editar).</p></article>
+            <article class="cartao cli-perfil revelar"><span class="cartao-icone"><i class="fas fa-building"></i></span><h3>Rede de clínicas</h3><p>Várias unidades no mesmo sistema, cada uma com seus próprios dados, usuários e número de WhatsApp.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Recursos</span>
+            <h2 class="titulo-secao">Tudo o que a clínica <em>precisa</em></h2>
+        </div>
+        <div class="grade grade-3 mt-4">
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-calendar-check"></i></span><h3>Agenda e marcação online</h3><p>Calendário por profissional (dia, semana e mês), grade de horários, bloqueios, lista de espera, salas e equipamentos.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-notes-medical"></i></span><h3>Prontuário eletrônico</h3><p>Atendimento SOAP com sinais vitais e IMC, modelos por especialidade, CID-10 e CID-11, linha do tempo e auditoria de acessos.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-prescription"></i></span><h3>Receitas e documentos</h3><p>Receitas com checagem de interações medicamentosas e alerta de alergia, controle especial, atestados e pedidos de exame.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-file-signature"></i></span><h3>Assinatura eletrônica</h3><p>PDFs assinados com código de verificação pública e termos de consentimento assinados pelo paciente na tela.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-video"></i></span><h3>Teleconsulta</h3><p>Videochamada com termo CFM 2.314/2022 e gravação autorizada pelo paciente, salva no prontuário.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-flask-vial"></i></span><h3>Exames e gráficos</h3><p>Comparativo de exames laboratoriais com faixas de referência, odontograma e curva de crescimento da OMS.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-id-card"></i></span><h3>Convênios e TISS</h3><p>Operadoras e planos, autorização prévia, guias de consulta e SP/SADT, lotes XML TISS e controle de glosas.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-sack-dollar"></i></span><h3>Financeiro</h3><p>Contas a pagar e receber, caixa diário, conciliação bancária (OFX/CSV), repasse médico, orçamentos e DRE.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-boxes-stacked"></i></span><h3>Estoque e compras</h3><p>Lotes e validade, kardex, baixa automática de insumos por atendimento, pedidos de compra e inventário.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-ticket"></i></span><h3>Senhas e painel de TV</h3><p>Emissão de senhas por serviço, guichês com responsável e chamada por voz no painel da sala de espera.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fab fa-whatsapp"></i></span><h3>Relacionamento</h3><p>Lembretes, confirmação por SIM/NÃO, aniversários, NPS, call center e campanhas por WhatsApp, e-mail e SMS.</p></article>
+            <article class="cartao revelar"><span class="cartao-icone"><i class="fas fa-chart-pie"></i></span><h3>Relatórios e BI</h3><p>Ocupação, faltas, ticket médio, origem dos pacientes e faturamento por convênio, com exportação para Excel e PDF.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Prévia</span>
+            <h2 class="titulo-secao">Veja algumas telas <em>do sistema</em></h2>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-6 revelar">
+                <div class="cli-janela">
+                    <div class="cli-janela-topo"><i class="fas fa-calendar-day"></i> Agenda do dia <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="cli-janela-corpo">
+                        <p class="titulo-mini">Dra. Exemplo · Clínica geral</p>
+                        <ul class="cli-agenda">
+                            <li><span class="hora">08:00</span><span>Paciente Exemplo A<small>Consulta · Particular</small></span><span class="cli-st atend">Em atendimento</span></li>
+                            <li><span class="hora">08:30</span><span>Paciente Exemplo B<small>Retorno · Convênio</small></span><span class="cli-st cheg">Chegou</span></li>
+                            <li><span class="hora">09:00</span><span>Paciente Exemplo C<small>Consulta · Convênio</small></span><span class="cli-st conf">Confirmado</span></li>
+                            <li><span class="hora">09:30</span><span>Paciente Exemplo D<small>Teleconsulta · Particular</small></span><span class="cli-st tele">Teleconsulta</span></li>
+                            <li><span class="hora">10:00</span><span>Paciente Exemplo E<small>Consulta · Particular</small></span><span class="cli-st conf">Confirmado</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 revelar">
+                <div class="cli-janela">
+                    <div class="cli-janela-topo"><i class="fas fa-notes-medical"></i> Prontuário · Atendimento <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="cli-janela-corpo">
+                        <p class="titulo-mini">Sinais vitais</p>
+                        <div class="cli-sinais">
+                            <div><b>12/8</b>Pressão</div>
+                            <div><b>72</b>bpm</div>
+                            <div><b>36,6 °C</b>Temp.</div>
+                            <div><b>24,1</b>IMC</div>
+                        </div>
+                        <p class="titulo-mini mb-2">Receita</p>
+                        <div class="cli-receita"><i class="fas fa-pills me-2" style="color:#139e86"></i>Medicamento A, 1 comprimido a cada 12h</div>
+                        <div class="cli-receita"><i class="fas fa-pills me-2" style="color:#139e86"></i>Medicamento B, 1 comprimido ao dia</div>
+                        <div class="cli-alerta"><strong><i class="fas fa-triangle-exclamation me-1"></i> Interação medicamentosa</strong>O medicamento B interage com um medicamento de uso contínuo do paciente. Revise a prescrição.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 revelar">
+                <div class="cli-janela">
+                    <div class="cli-janela-topo"><i class="fas fa-tv"></i> Painel de senhas · Sala de espera <span class="pontinhos"><i></i><i></i><i></i></span></div>
+                    <div class="cli-janela-corpo">
+                        <div class="cli-tv">
+                            <div class="cli-tv-atual">
+                                <small>SENHA CHAMADA</small>
+                                <strong>P012</strong>
+                                <span>Guichê 2 · Recepção</span>
+                            </div>
+                            <ul>
+                                <li><span>Últimas chamadas</span><span></span></li>
+                                <li><b>N041</b><span>Guichê 1</span></li>
+                                <li><b>P011</b><span>Guichê 3</span></li>
+                                <li><b>N040</b><span>Consultório 4</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="cli-nota">Telas ilustrativas com dados de exemplo.</p>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cta-faixa revelar">
+            <div>
+                <h2>Leve o MedAccess para a sua clínica</h2>
+                <p>Fale com a nossa equipe e agende uma demonstração.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="https://wa.me/5565981132995?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20sistema%20MedAccess%20para%20cl%C3%ADnicas." target="_blank" rel="noopener" class="btn-sec btn-ouro"><i class="fab fa-whatsapp"></i> Solicitar demonstração</a>
+                <a href="{% url 'contato' %}" class="btn-sec btn-contorno">Fale conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+{% endblock %}

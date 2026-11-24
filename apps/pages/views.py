@@ -77,6 +77,9 @@ def seletivo(request):
 def alvara(request):
     return render(request, 'alvara.html')
 
+def clinica(request):
+    return render(request, 'clinica.html')
+
 def membros(request):
     membros = MembroEquipe.objects.all()
     return render(request, 'membros.html', {'equipe': membros})
