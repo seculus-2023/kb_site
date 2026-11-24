@@ -18,6 +18,7 @@ urlpatterns = [
     path('seletivo', views.seletivo, name='seletivo'),
     path('alvara', views.alvara, name='alvara'),
     path('clinica', views.clinica, name='clinica'),
+    path('certificados', views.certificados, name='certificados'),
 
     # PWA: o service worker e a tela offline ficam na raiz do site
     path('sw.js', views.service_worker, name='service_worker'),

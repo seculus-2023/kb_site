@@ -24,7 +24,7 @@
               <a class="nav-link{% if pagina == 'home' %} active{% endif %}" href="{% url 'home' %}">HOME</a>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle{% if pagina == 'historia' or pagina == 'valores' or pagina == 'membros' %} active{% endif %}" href="#" id="navbarDropdownSeculus" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link dropdown-toggle{% if pagina == 'historia' or pagina == 'valores' or pagina == 'membros' or pagina == 'certificados' %} active{% endif %}" href="#" id="navbarDropdownSeculus" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 A SECULUS
               </a>
               <ul class="dropdown-menu text-center text-lg-start" aria-labelledby="navbarDropdownSeculus">
@@ -32,6 +32,7 @@
                 <li><a class="dropdown-item" href="{% url 'valores' %}">Missão e Valores</a></li>
                 <li><a class="dropdown-item" href="{% url 'contato' %}">Trabalhe conosco</a></li>
                 <li><a class="dropdown-item" href="{% url 'membros' %}">Equipe</a></li>
+                <li><a class="dropdown-item" href="{% url 'certificados' %}">Certificações</a></li>
               </ul>
             </li>
             <li class="nav-item">

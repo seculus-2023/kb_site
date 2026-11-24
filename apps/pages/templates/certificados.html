@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Certificações{% endblock %}
+{% block descricao %}Certificações e cursos de Antonio Roberto Pereira Junior, fundador da Seculus: GeneXus Analista Sênior, Scrum Foundation (SFPC), gestão de processos, análise de sistemas e programação desde 1985.{% endblock %}
+{% block og_titulo %}Certificações | Seculus{% endblock %}
+
+{% block head %}
+<style>
+    .cert-numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 16px; }
+    .cert-numero { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 18px; text-align: center; box-shadow: var(--shadow-sm); }
+    .cert-numero strong { display: block; font-size: clamp(30px, 5vw, 40px); line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .cert-numero span { font-size: 13px; color: var(--muted); }
+
+    /* Destaques */
+    .cert-destaque { background: linear-gradient(160deg, var(--navy-800), var(--navy-900)); border-radius: var(--radius); padding: 26px 24px; color: #d9e0ec; height: 100%; position: relative; overflow: hidden; }
+    .cert-destaque::after { content: "\f559"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: -6px; bottom: -14px; font-size: 92px; color: rgba(184,154,101,.12); }
+    .cert-destaque small { color: var(--gold); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; font-weight: 700; }
+    .cert-destaque h3 { color: #fff; font-size: 19px; margin: 8px 0 6px; }
+    .cert-destaque p { margin: 0; font-size: 14px; color: #b7c2d4; }
+    .cert-destaque .cert-selo { display: inline-block; margin-top: 14px; background: rgba(184,154,101,.18); color: #e9d6b0; border: 1px solid rgba(184,154,101,.4); border-radius: 999px; padding: 3px 12px; font-size: 12.5px; font-weight: 700; }
+
+    /* Filtros */
+    .cert-filtros { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 28px 0 8px; }
+    .cert-filtro { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+    .cert-filtro i { margin-right: 6px; color: var(--gold-dark); }
+    .cert-filtro b { margin-left: 6px; font-weight: 700; color: var(--muted); }
+    .cert-filtro:hover { border-color: var(--ink); }
+    .cert-filtro[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .cert-filtro[aria-pressed="true"] i, .cert-filtro[aria-pressed="true"] b { color: var(--gold); }
+
+    /* Linha do tempo */
+    .cert-linha { list-style: none; margin: 24px auto 0; padding: 0; max-width: 860px; position: relative; }
+    .cert-linha::before { content: ""; position: absolute; left: 66px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+    .cert-item { display: grid; grid-template-columns: 52px 1fr; gap: 30px; position: relative; margin-bottom: 14px; }
+    .cert-item[hidden] { display: none; }
+    .cert-ano { font-weight: 800; color: var(--gold-dark); font-size: 15px; text-align: right; padding-top: 18px; font-variant-numeric: tabular-nums; }
+    .cert-item::before { content: ""; position: absolute; left: 61px; top: 22px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--gold); }
+    .cert-cartao { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); }
+    .cert-cartao h3 { font-size: 16.5px; margin: 0 0 4px; line-height: 1.35; }
+    .cert-inst { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+    .cert-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+    .cert-meta span i { margin-right: 5px; color: var(--gold-dark); }
+    .cert-tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--surface-alt); border: 1px solid var(--line); color: var(--ink); margin-bottom: 8px; }
+    .cert-verificar { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 13px; font-weight: 600; }
+    .cert-codigo { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
+
+    .cert-nota { font-size: 13px; color: var(--muted); font-style: italic; text-align: center; margin: 24px 0 0; }
+
+    @media (max-width: 575px) {
+        .cert-linha::before { left: 6px; }
+        .cert-item { grid-template-columns: 1fr; gap: 4px; padding-left: 26px; }
+        .cert-item::before { left: 1px; top: 4px; }
+        .cert-ano { text-align: left; padding-top: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block banner_titulo %}
+<span class="eyebrow">A Seculus · Fundador</span>
+<h1>Certificações</h1>
+<p>A formação de Antonio Roberto Pereira Junior, do Basic em 1985 ao GeneXus 18 e ao Scrum.</p>
+{% endblock %}
+
+{% block content %}
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cert-numeros revelar">
+            <div class="cert-numero"><strong>{{ total }}</strong><span>certificados e cursos</span></div>
+            <div class="cert-numero"><strong>{{ primeiro_ano }}</strong><span>ano do primeiro curso de programação</span></div>
+            <div class="cert-numero"><strong>{{ horas }}h+</strong><span>de carga horária registrada</span></div>
+            <div class="cert-numero"><strong>94%</strong><span>na certificação Analista Sênior GeneXus X</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="secao secao-alt">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Destaques</span>
+            <h2 class="titulo-secao">Certificações <em>profissionais</em></h2>
+        </div>
+        <div class="row g-4 mt-2">
+            {% for c in destaques %}
+            <div class="col-md-4 revelar">
+                <div class="cert-destaque">
+                    <small>{{ c.instituicao }} · {{ c.ano }}</small>
+                    <h3>{{ c.titulo }}</h3>
+                    <p>{{ c.area_nome }}</p>
+                    {% if c.nota %}<span class="cert-selo">Aprovado com {{ c.nota }}</span>{% elif c.codigo %}<span class="cert-selo">{{ c.codigo }}</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="secao">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">Linha do tempo</span>
+            <h2 class="titulo-secao">Quatro décadas de <em>formação contínua</em></h2>
+        </div>
+
+        <div class="cert-filtros" role="group" aria-label="Filtrar por área">
+            <button type="button" class="cert-filtro" data-area="todas" aria-pressed="true">Todas<b>{{ total }}</b></button>
+            {% for a in areas %}
+            <button type="button" class="cert-filtro" data-area="{{ a.chave }}" aria-pressed="false"><i class="{{ a.icone }}"></i>{{ a.nome }}<b>{{ a.total }}</b></button>
+            {% endfor %}
+        </div>
+
+        <ol class="cert-linha">
+            {% for c in certificados %}
+            <li class="cert-item" data-area="{{ c.area }}">
+                <div class="cert-ano">{{ c.ano }}</div>
+                <article class="cert-cartao">
+                    <span class="cert-tag"><i class="{{ c.area_icone }} me-1"></i>{{ c.area_nome }}</span>
+                    <h3>{{ c.titulo }}</h3>
+                    <p class="cert-inst">{{ c.instituicao }}</p>
+                    <div class="cert-meta">
+                        <span><i class="far fa-calendar"></i>{{ c.data }}</span>
+                        {% if c.horas %}<span><i class="far fa-clock"></i>{{ c.horas }}h</span>{% endif %}
+                        {% if c.nota %}<span><i class="fas fa-award"></i>{{ c.nota }}</span>{% endif %}
+                        {% if c.local %}<span><i class="fas fa-location-dot"></i>{{ c.local }}</span>{% endif %}
+                    </div>
+                    {% if c.url %}
+                    <a class="cert-verificar" href="{{ c.url }}" target="_blank" rel="noopener"><i class="fas fa-shield-halved"></i> Verificar autenticidade</a>
+                    {% endif %}
+                    {% if c.codigo and not c.destaque %}<div class="cert-codigo">Código: {{ c.codigo }}</div>{% endif %}
+                </article>
+            </li>
+            {% endfor %}
+        </ol>
+        <p class="cert-nota">Os originais podem ser apresentados mediante solicitação.</p>
+    </div>
+</section>
+
+{% include 'partials/cta.html' %}
+
+<script>
+(function () {
+    var botoes = document.querySelectorAll('.cert-filtro');
+    var itens = document.querySelectorAll('.cert-item');
+    botoes.forEach(function (botao) {
+        botao.addEventListener('click', function () {
+            var area = botao.dataset.area;
+            botoes.forEach(function (b) { b.setAttribute('aria-pressed', b === botao ? 'true' : 'false'); });
+            itens.forEach(function (item) {
+                item.hidden = !(area === 'todas' || item.dataset.area === area);
+            });
+        });
+    });
+})();
+</script>
+{% endblock %}
