@@ -1,0 +1,30 @@
+{% comment %}
+Vídeo de apresentação com controles (o visitante decide quando assistir).
+Uso como seção própria:
+  {% include 'partials/video_apresentacao.html' with arquivo='Nome.mp4' eyebrow='...' titulo='...' destaque='...' classe_secao='secao-alt' %}
+Uso dentro de uma seção existente (sem <section>/<div class="wrap">):
+  {% include 'partials/video_apresentacao.html' with arquivo='Nome.mp4' embutido=True %}
+Os arquivos ficam em media/ (servidos em /media/ pelo Django em DEBUG e pelo nginx em produção).
+{% endcomment %}
+{% if not embutido %}
+<section class="secao {{ classe_secao }}">
+    <div class="wrap">
+        <div class="cabecalho-secao centro revelar">
+            <span class="eyebrow">{{ eyebrow|default:"Vídeo" }}</span>
+            <h2 class="titulo-secao">{{ titulo }} <em>{{ destaque }}</em></h2>
+        </div>
+{% endif %}
+        <div class="video-apresentacao revelar">
+            <video controls playsinline preload="metadata">
+                <source src="/media/{{ arquivo }}" type="video/mp4">
+                Seu navegador não reproduz vídeos. <a href="/media/{{ arquivo }}">Baixe o vídeo</a>.
+            </video>
+        </div>
+{% if not embutido %}
+    </div>
+</section>
+{% endif %}
+<style>
+    .video-apresentacao { max-width: 960px; margin: 32px auto 0; border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); background: #000; }
+    .video-apresentacao video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+</style>
